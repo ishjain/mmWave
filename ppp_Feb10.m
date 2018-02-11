@@ -25,7 +25,7 @@ Rval = sqrt(10^6/pi);
 Lval=(.5:.5:10)/(1000)^2;
 count=0;
 
-for iter = 1:1000
+for iter = 1:100
 %     count=count+1;
     for Rind=1:length(Rval)
         for Lind = 1:length(Lval)
@@ -69,10 +69,18 @@ hold on;
 semilogy(Lval, th_noapprox)
 legend('emperical', 'theoretical')
 
-figure(2)
-plot(Lval,emp_noapprox);
-hold on;
-plot(Lval, th_noapprox)
-legend('emperical', 'theoretical')
+h=figure(2);
+% plot(Lval,emp_noapprox,'LineWidth',2);
+hold on; grid on;
+plot(Lval, th_noapprox,'LineWidth',2)
+% legend('emperical', 'theoretical')
+xlabel('\lambda_T (Density of APs per km^2)', 'fontsize',13)
+ylabel('Probability that all APs are blocked','fontsize',13)
+% title('APs blockage probability in 1km^2 area')
+set(h,'Units','Inches');
+pos = get(h,'Position');
+set(h,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+print(h,[pwd '/figures/N_block_prob.pdf'],'-dpdf','-r0')
+% saveas(gcf,[pwd '/figures/N_block_prob.pdf'])
 
 
