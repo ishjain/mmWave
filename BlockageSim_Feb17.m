@@ -26,34 +26,35 @@ xT = rT.*cos(alphaT);%location of APs
 yT = rT.*sin(alphaT);%location of APs
 data = cell(nB,nT); %contans timestamp of blockage of all APs by all blockers
 s_input = struct('V_POSITION_X_INTERVAL',[-100 100],...%(m)
-                 'V_POSITION_Y_INTERVAL',[-100 100],...%(m)
-                 'V_SPEED_INTERVAL',[1 1],...%(m/s)
-                 'V_PAUSE_INTERVAL',[0 0],...%pause time (s)
-                 'V_WALK_INTERVAL',[1.00 180.00],...%walk time (s)
-                 'V_DIRECTION_INTERVAL',[-180 180],...%(degrees)
-                 'SIMULATION_TIME',500,...%(s)
-                 'NB_NODES',100);
+    'V_POSITION_Y_INTERVAL',[-100 100],...%(m)
+    'V_SPEED_INTERVAL',[1 1],...%(m/s)
+    'V_PAUSE_INTERVAL',[0 0],...%pause time (s)
+    'V_WALK_INTERVAL',[1.00 180.00],...%walk time (s)
+    'V_DIRECTION_INTERVAL',[-180 180],...%(degrees)
+    'SIMULATION_TIME',500,...%(s)
+    'NB_NODES',100);
 s_mobility = Generate_Mobility(s_input);
 
-for iter =1:1
-    for indB = 1:nB %for every blocker
-       loc0 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter);...
-           s_mobility.VS_NODE(indB).V_POSITION_Y(iter)]; 
-       loc1 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter+1);...
-           s_mobility.VS_NODE(indB).V_POSITION_Y(iter+1)];
-       start_time = s_mobility.VS_NODE(indB).V_TIME(iter);
-       velocity = sqrt((s_mobility.VS_NODE(indB).V_SPEED_X(iter))^2+ ...
-           (s_mobility.VS_NODE(indB).V_SPEED_Y(iter))^2);
-       for indT = 1:nT %for every AP
-           locT = [xT(indT);yT(indT)];
-           
-           distance_travelled = find_blockage_distance([loc0,loc1],locT,alphaT(indT));
-           if(distance_travelled>=0)
-               blockage_time = distance_travelled/velocity;
-               
-               data{indB,indT} = 1;
-           end
-       end
+
+for indB = 1:nB %for every blocker
+    for iter =1:(length(s_mobility.VS_NODE(indB).V_POSITION_X)-1)
+        loc0 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter);...
+            s_mobility.VS_NODE(indB).V_POSITION_Y(iter)];
+        loc1 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter+1);...
+            s_mobility.VS_NODE(indB).V_POSITION_Y(iter+1)];
+        start_time = s_mobility.VS_NODE(indB).V_TIME(iter);
+        velocity = sqrt((s_mobility.VS_NODE(indB).V_SPEED_X(iter))^2+ ...
+            (s_mobility.VS_NODE(indB).V_SPEED_Y(iter))^2);
+        for indT = 1:nT %for every AP
+            locT = [xT(indT);yT(indT)];
+            
+            distance_travelled = find_blockage_distance([loc0,loc1],locT,alphaT(indT));
+            if(distance_travelled>=0)
+                blockage_time = distance_travelled/velocity;
+                
+                data{indB,indT} = start_time+blockage_time;
+            end
+        end
     end
     
 end

@@ -1,3 +1,4 @@
+function dist = find_blockage_distance(locB,locT,alpha)
 %find_blockage_distance.m
 %Feb19
 %Function to find the distance of blockage for a particular AP and
@@ -13,10 +14,10 @@
 %point of intersection. In no ointersection, then dist = -1.
 
 %test---------------------
-locT = [2;2];
-locB = [1,1;0,3];
-alpha = pi/4;
-wannaplot=1;
+% locT = [2;2];
+% locB = [1,1;0,3];
+% alpha = pi/4;
+wannaplot=0;
 %------------------------
 rotMat = [cos(alpha),sin(alpha);-sin(alpha),cos(alpha)]; %Rotation Matrix
 locBnew = rotMat*locB;
