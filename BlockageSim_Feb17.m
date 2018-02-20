@@ -40,11 +40,19 @@ for iter =1:1
        loc0 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter);...
            s_mobility.VS_NODE(indB).V_POSITION_Y(iter)]; 
        loc1 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter+1);...
-           s_mobility.VS_NODE(indB).V_POSITION_Y(iter+1)]; 
+           s_mobility.VS_NODE(indB).V_POSITION_Y(iter+1)];
+       start_time = s_mobility.VS_NODE(indB).V_TIME(iter);
+       velocity = sqrt((s_mobility.VS_NODE(indB).V_SPEED_X(iter))^2+ ...
+           (s_mobility.VS_NODE(indB).V_SPEED_Y(iter))^2);
        for indT = 1:nT %for every AP
-           find_blockage_timestamp;
-           data{indB,indT} = 1;
+           locT = [xT(indT);yT(indT)];
            
+           distance_travelled = find_blockage_distance([loc0,loc1],locT,alphaT(indT));
+           if(distance_travelled>=0)
+               blockage_time = distance_travelled/velocity;
+               
+               data{indB,indT} = 1;
+           end
        end
     end
     
