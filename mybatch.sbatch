@@ -2,8 +2,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=1:00:00
-#SBATCH --mem=2GB
+#SBATCH --time=12:00:00
+#SBATCH --mem=64GB
 #SBATCH --job-name=myTest
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ishjain@nyu.edu
