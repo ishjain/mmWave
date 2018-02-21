@@ -12,6 +12,7 @@ clear;
 
 %----Play-with-values---------------------------------------
 aID = getenv('SLURM_ARRAY_TASK_ID')
+rng(aID*1000);
 wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
@@ -62,4 +63,4 @@ for indB = 1:length(densityBL)
 
 end
 
-csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)
+csvwrite(strcat('/Data/','output',num2str(aID),'.csv'),finaldata)
