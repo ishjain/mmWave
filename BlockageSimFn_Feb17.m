@@ -1,4 +1,4 @@
-function [avgFreq,avgDur] = BlockageSimFn_Feb17(s_input,AP_input)
+function output = BlockageSimFn_Feb17(s_input,AP_input)
 % BlockageSim_Feb17
 % Random Way-point mobility model for blockers
 % Simulating Blockage of nT number of APs.
@@ -10,16 +10,33 @@ function [avgFreq,avgDur] = BlockageSimFn_Feb17(s_input,AP_input)
 
 
 %----Play-with-values-here--------------------------------------
-wannaplot = 1;
+wannaplot = AP_input.WANNAPLOT; %1;
 
-R=AP_input.RADIUS; %m Radius
+R=AP_input.RADIUS_AROUND_UE; %m Radius
 nB = s_input.NB_NODES;%4*R^2*rho_b;%=4000; %number of blokers
-nT = AP_input.nT; %number of APs
+% nT = AP_input.nT; %number of APs
+rhoB=s_input.DENSITY_BL;
+V = 1; %m/s Attension!!!!!!!!!!!!!!!!!!!
+rhoT = AP_input.DENSITY_AP;
+nT = poissrnd(rhoT*pi*R^2);
+% nT=1
+if(nT==0), output=[0,0,0,0,0,0]; return; end % Dealing zero APs
+frac = AP_input.FRACTION;
+rT = R*sqrt(rand(nT,1)); %location of APs
+alphaT = 2*pi*rand(nT,1);%location of APs
+xT = rT.*cos(alphaT);%location of APs
+yT = rT.*sin(alphaT);%location of APs
+xTfrac = frac*xT; %blockage zone around UE for each APs
+yTfrac = frac*yT;
+locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
+
+
+
 simTime = AP_input.SIMULATION_TIME; %sec Total Simulation time
 tstep = AP_input.TIME_STEP; %(sec) time step
 mu = AP_input.MU; %Expected bloc dur =1/mu
-locT = AP_input.T_EFF_LOCATION; %AP location
-alphaT = AP_input.T_ANGLE;
+% locT = AP_input.T_EFF_LOCATION; %AP location
+% alphaT = AP_input.T_ANGLE;
 
 s_mobility = Generate_Mobility(s_input);
 
@@ -88,3 +105,17 @@ end
 %%Evaluate frequency and average duration of blockage
 avgFreq = sum(diff(allBl)>0)/simTime;
 avgDur = sum(allBl)*tstep/sum(diff(allBl)>0);
+probAllBl = sum(allBl)*tstep/simTime;
+
+%%Get theoretical values
+temp = 2/pi*rhoB*V*frac;
+c = temp/mu;
+th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
+th_durBl = 1/(nT*mu);
+th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
+
+%%Return now
+output=[avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
+
+
+end

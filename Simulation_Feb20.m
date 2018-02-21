@@ -11,54 +11,55 @@ close all;
 clear;
 
 %----Play-with-values---------------------------------------
-
+aID = getenv('SLURM_ARRAY_TASK_ID')
+wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
 hr = 1.4;
 ht = 6;
-
+frac = (hb-hr)/(ht-hr);
+simTime = 60*10; %sec Total Simulation time
+tstep = 0.0001; %(sec) time step
+mu = 5; %Expected bloc dur =1/mu
 R = 100; %m Radius
 densityBL = [0.01,0.1,0.2,0.5,0.65];
-rho_b = 0.01;%0.65;%Rajeev calculated central park
-nB = 4*R^2*rho_b;%=4000; %number of blokers
+densityAP = [1,2,5,10]/10^4;
 
 
-nT = 3; %number of APs
-simTime = 60*10; %sec Total Simulation time 
-tstep = 0.01; %(sec) time step
-mu = 5; %Expected bloc dur =1/mu
-%------------------------------------------------------
 
-frac = (hb-hr)/(ht-hr);
-% temp = 2/pi*rho_b*V*frac; %for theoretical only
-rT = R*sqrt(rand(nT,1)); %location of APs
-alphaT = 2*pi*rand(nT,1);%location of APs
-xT = rT.*cos(alphaT);%location of APs
-yT = rT.*sin(alphaT);%location of APs
-xTfrac = frac*xT; %blockage zone around UE for each APs
-yTfrac = frac*yT;
-locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
-% data = cell(nB,nT); %contans timestamp of blockage of all APs by all blockers
+% MAX=200;
+% for iter=1:MAX
+for indB = 1:length(densityBL)
+    for indT = 1:length(densityAP)
+        
+        rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
+        nB = 4*R^2*rhoB;%=4000; %number of blokers
+        
+        rhoT = densityAP(indT);
 
-s_input = struct('V_POSITION_X_INTERVAL',[-R R],...%(m)
-    'V_POSITION_Y_INTERVAL',[-R R],...%(m)
-    'V_SPEED_INTERVAL',[V V],...%(m/s)
-    'V_PAUSE_INTERVAL',[0 0],...%pause time (s)
-    'V_WALK_INTERVAL',[1.00 60.00],...%walk time (s)
-    'V_DIRECTION_INTERVAL',[-180 180],...%(degrees)
-    'SIMULATION_TIME',simTime,...%(s)
-    'NB_NODES',nB);
-
-iterMax =100;
-for iter =1:iterMax
-
-AP_input = struct('RADIUS',R,...
-    'T_EFF_LOCATION',locT,...
-    'T_ANGLE',alphaT,...
-    'nT',nT,...
-    'SIMULATION_TIME',simTime,...
-    'TIME_STEP',tstep,...
-    'MU',mu);
-[avgFreq,avgDur] = BlockageSimFn_Feb17(s_input,AP_input);
+        s_input = struct('V_POSITION_X_INTERVAL',[-R R],...%(m)
+            'V_POSITION_Y_INTERVAL',[-R R],...%(m)
+            'V_SPEED_INTERVAL',[V V],...%(m/s)
+            'V_PAUSE_INTERVAL',[0 0],...%pause time (s)
+            'V_WALK_INTERVAL',[1.00 60.00],...%walk time (s)
+            'V_DIRECTION_INTERVAL',[-180 180],...%(degrees)
+            'SIMULATION_TIME',simTime,...%(s)
+            'NB_NODES',nB,...
+            'DENSITY_BL',rhoB);
+        
+        AP_input = struct('WANNAPLOT',wannaplot,...
+            'RADIUS_AROUND_UE',R,...
+            'DENSITY_AP',rhoT,...
+            'SIMULATION_TIME',simTime,...
+            'TIME_STEP',tstep,...
+            'MU',mu,...
+            'FRACTION',frac);
+        output = BlockageSimFn_Feb17(s_input,AP_input);
+        finaldata(:,indB,indT) = output;
+    end
+% end
+% finaldata(:,:,iter) = output;
 
 end
+
+csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)
