@@ -21,8 +21,8 @@ temp = 2/pi*rho_b*V*frac;
 mu = 7;
 c = temp/mu;
 wannaplot=0;
-Rval = sqrt(10^6/pi);
-Lval=(.5:.5:10)/(1000)^2;
+Rval = 100;%sqrt(10^6/pi);
+Lval=(.1:.1:2)/100^2;%(.5:.5:10)/(1000)^2;
 count=0;
 
 for iter = 1:100
@@ -62,17 +62,17 @@ emp_noapprox = mean(prod_noapprox,1);
 
 % a_noapprox = 1-
 th_noapprox = exp(-2*pi.*Rval.*Lval/c).*(1+c*Rval).^(2*pi.*Lval/c^2);
-Lval=Lval*1000^2;
+% Lval=Lval*
 figure(1)
-semilogy(Lval,emp_noapprox);
+semilogy(Lval*1000^2,emp_noapprox);
 hold on;
-semilogy(Lval, th_noapprox)
+semilogy(Lval*1000^2, th_noapprox)
 legend('emperical', 'theoretical')
 
 h=figure(2);
 % plot(Lval,emp_noapprox,'LineWidth',2);
 hold on; grid on;
-plot(Lval, th_noapprox,'LineWidth',2)
+plot(Lval*1000^2, th_noapprox,'LineWidth',2)
 % legend('emperical', 'theoretical')
 xlabel('\lambda_T (Density of APs per km^2)', 'fontsize',13)
 ylabel('Probability that all APs are blocked','fontsize',13)
@@ -81,6 +81,22 @@ set(h,'Units','Inches');
 pos = get(h,'Position');
 set(h,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
 print(h,[pwd '/figures/N_block_prob.pdf'],'-dpdf','-r0')
-% saveas(gcf,[pwd '/figures/N_block_prob.pdf'])
+print(h,[pwd '/figures/N_block_prob.png'],'-dpng','-r0')
 
+
+
+%%Update Feb 20
+probNoConnection = exp(-Lval*pi*R^2);%basically n=0 probability
+probBl_givenConnection = th_noapprox - probNoConnection;
+
+h=figure(3);
+hold on; grid on;
+plot(Lval*1000^2, probBl_givenConnection,'LineWidth',2)
+xlabel('\lambda_T (Density of APs per km^2)', 'fontsize',13)
+ylabel('Prob all-blocked given atleast 1 AP in 100m','fontsize',13)
+set(h,'Units','Inches');
+pos = get(h,'Position');
+set(h,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+print(h,[pwd '/figures/N_block_prob_cond.pdf'],'-dpdf','-r0')
+print(h,[pwd '/figures/N_block_prob_cond.png'],'-dpng','-r0')
 

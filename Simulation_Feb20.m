@@ -11,8 +11,8 @@ close all;
 clear;
 
 %----Play-with-values---------------------------------------
-aID = getenv('SLURM_ARRAY_TASK_ID')
-rng(aID*1000);
+aID = 1%getenv('SLURM_ARRAY_TASK_ID')
+rng('shuffle');
 wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
@@ -21,7 +21,7 @@ ht = 6;
 frac = (hb-hr)/(ht-hr);
 simTime = 60*10; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
-mu = 5; %Expected bloc dur =1/mu
+mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
 densityBL = [0.01,0.1,0.2,0.5,0.65];
 densityAP = [1,2,5,10]/10^4;
@@ -30,8 +30,8 @@ densityAP = [1,2,5,10]/10^4;
 
 % MAX=200;
 % for iter=1:MAX
-for indB = 1:length(densityBL)
-    for indT = 1:length(densityAP)
+for indB = 1:1%length(densityBL)
+    for indT = 1:1%length(densityAP)
         
         rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
         nB = 4*R^2*rhoB;%=4000; %number of blokers
@@ -63,4 +63,4 @@ for indB = 1:length(densityBL)
 
 end
 
-csvwrite(strcat('/Data/','output',num2str(aID),'.csv'),finaldata)
+csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)

@@ -18,7 +18,7 @@ nB = s_input.NB_NODES;%4*R^2*rho_b;%=4000; %number of blokers
 rhoB=s_input.DENSITY_BL;
 V = 1; %m/s Attension!!!!!!!!!!!!!!!!!!!
 rhoT = AP_input.DENSITY_AP;
-nT = poissrnd(rhoT*pi*R^2);
+nT = poissrnd(rhoT*pi*R^2)
 % nT=1
 if(nT==0), output=[0,0,0,0,0,0]; return; end % Dealing zero APs
 frac = AP_input.FRACTION;
@@ -69,7 +69,7 @@ for indB = 1:nB %for every blocker
 end
 
 
-totaltime = (simTime)/tstep;
+totaltime = (simTime)/tstep
 binary_seq = zeros(nT,totaltime);
 allBl = ones(1,totaltime); %binary seq of all blocked
 Tval = tstep:tstep:totaltime*tstep; %run simulation till tdur with step of tstep
