@@ -110,7 +110,14 @@ probAllBl = sum(allBl)*tstep/simTime;
 %%Get theoretical values
 temp = 2/pi*rhoB*V*frac;
 c = temp/mu;
-th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
+
+%%This is average frequency of blockage theoretical value
+% th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
+        
+a = 1-2*mu./(R*temp) + 2*mu^2./(R^2*temp.^2).*log(1+temp.*R/mu);
+th_freqBl = mu*a.*rhoT*pi*R^2.*exp((a-1).*rhoT*pi*R^2);
+
+
 th_durBl = 1/(nT*mu);
 th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
 
