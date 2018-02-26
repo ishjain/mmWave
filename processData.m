@@ -61,37 +61,37 @@ color = {'r','g','b','m','k'};
 h=figure(3);
 hold on; grid on;
 for j=1:5
-plot(densityAP, probAllBl(j,:),'color',color{j},'LineWidth',2)
+plot(densityAP*10^4, probAllBl(j,:),'color',color{j},'LineWidth',2)
 end
 for j=1:5
-plot(densityAP, th_probAllBl(j,:),'color',color{j},'LineStyle','--','LineWidth',2)
+plot(densityAP*10^4, th_probAllBl(j,:),'color',color{j},'LineStyle','--','LineWidth',2)
 end
 g=legend('\rho_b=0.01 bl/m^2','\rho_b=0.1 bl/m^2','\rho_b=0.2 bl/m^2',...
     '\rho_b=0.5 bl/m^2','\rho_b=0.65 bl/m^2' );
 set(g,'fontsize',13)
-xlabel('\lambda_T (Density of APs per km^2)', 'fontsize',13)
+xlabel('AP Density \rho_T (x 100/km^2)', 'fontsize',13)
 ylabel('Prob all APs blocked within 100m','fontsize',13)
 set(h,'Units','Inches');
 pos = get(h,'Position');
 set(h,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-% print(h,[pwd '/figures/N_block_prob_cond.pdf'],'-dpdf','-r0')
-% print(h,[pwd '/figures/N_block_prob_cond.png'],'-dpng','-r0')
+print(h,[pwd '/figures/prob_all_bl.pdf'],'-dpdf','-r0')
+print(h,[pwd '/figures/prob_all_bl.png'],'-dpng','-r0')
 
 h=figure(4);
 hold on; grid on;
 for j=1:5
-plot(densityAP, avgFreq(j,:),'color',color{j},'LineWidth',2)
+plot(densityAP*10^4, avgFreq(j,:),'color',color{j},'LineWidth',2)
 end
 for j=1:5
-plot(densityAP, th_freqBl(j,:),'color',color{j},'LineStyle','--','LineWidth',2)
+plot(densityAP*10^4, th_freqBl(j,:),'color',color{j},'LineStyle','--','LineWidth',2)
 end
 g=legend('\rho_b=0.01 bl/m^2','\rho_b=0.1 bl/m^2','\rho_b=0.2 bl/m^2',...
     '\rho_b=0.5 bl/m^2','\rho_b=0.65 bl/m^2' );
 set(g,'fontsize',13)
-xlabel('\lambda_T (Density of APs per km^2)', 'fontsize',13)
+xlabel('AP Density \rho_T (x 100/km^2)', 'fontsize',13)
 ylabel('Average frequency of all APs blockage','fontsize',13)
 set(h,'Units','Inches');
 pos = get(h,'Position');
 set(h,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-% print(h,[pwd '/figures/N_block_prob_cond.pdf'],'-dpdf','-r0')
-% print(h,[pwd '/figures/N_block_prob_cond.png'],'-dpng','-r0')
+print(h,[pwd '/figures/avg_freq.pdf'],'-dpdf','-r0')
+print(h,[pwd '/figures/avg_freq.png'],'-dpng','-r0')
