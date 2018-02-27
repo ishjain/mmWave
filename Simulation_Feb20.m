@@ -21,7 +21,7 @@ ht = 6;
 frac = (hb-hr)/(ht-hr);
 simTime = 60*10; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
-mu = 2; %Expected bloc dur =1/mu
+mu = 20; %Expected bloc dur =1/mu
 R = 100; %m Radius
 densityBL = [0.01,0.1,0.2,0.5,0.65];
 densityAP = (1:.5:10)/10^4;
