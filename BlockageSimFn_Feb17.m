@@ -76,12 +76,17 @@ Tval = tstep:tstep:totaltime*tstep; %run simulation till tdur with step of tstep
 if(wannaplot),figure; hold on; end
 
 for indT = 1:nT
+    len =length(dataAP{indT});
+    dataAP{indT}(2,:) =  ceil(exprnd(1/mu,1,len)/tstep);
+end
+
+for indT = 1:nT
     %     blDur  = exprnd(1/mu);
     for timestamp = 1:length(dataAP{indT})
-        blDur  = ceil(exprnd(1/mu)/tstep);
-        blTime = ceil(dataAP{indT}(timestamp)/tstep);
+        blDur  = ceil(dataAP{indT}(2,timestamp));
+        blTime = ceil(dataAP{indT}(1,timestamp)/tstep);
         if(blTime+blDur<=simTime/tstep)%avoid excess duration
-            binary_seq(indT, blTime:1:(blTime+blDur))=1;
+            binary_seq(indT, blTime+1:1:(blTime+blDur))=1;
         end
     end
     allBl = allBl & binary_seq(indT,:);
@@ -116,10 +121,10 @@ c = temp/mu;
         
 a = 1-2*mu./(R*temp) + 2*mu^2./(R^2*temp.^2).*log(1+temp.*R/mu);
 th_freqBl = mu*a.*rhoT*pi*R^2.*exp((a-1).*rhoT*pi*R^2);
-
+th_probAllBl = exp(-(1-a)*rhoT);
 
 th_durBl = 1/(nT*mu);
-th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
+% th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
 
 %%Return now
 output=[avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];

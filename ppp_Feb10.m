@@ -1,4 +1,6 @@
 %PPP
+%Feb27: Corrected typo in calculating conditional probability of blockage
+%given that atleast one AP is in range.
 %Feb9: Verify the theoretical vs emperical model of E(prod(di))
 
 clear all;
@@ -87,7 +89,7 @@ print(h,[pwd '/figures/N_block_prob.png'],'-dpng','-r0')
 
 %%Update Feb 20
 probNoConnection = exp(-Lval*pi*R^2);%basically n=0 probability
-probBl_givenConnection = th_noapprox - probNoConnection;
+probBl_givenConnection = (th_noapprox - probNoConnection)./(1-probNoConnection);
 
 h=figure(3);
 hold on; grid on;

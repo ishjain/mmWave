@@ -13,7 +13,7 @@ clear;
 %----Play-with-values---------------------------------------
 aID = getenv('SLURM_ARRAY_TASK_ID')
 rng('shuffle');
-wannaplot=0;
+wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
 hr = 1.4;
@@ -21,10 +21,10 @@ ht = 6;
 frac = (hb-hr)/(ht-hr);
 simTime = 60*10; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
-mu = 20; %Expected bloc dur =1/mu
+mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
 densityBL = [0.01,0.1,0.2,0.5,0.65];
-densityAP = (1:.5:10)/10^4;
+densityAP = (1:1:5)/10^4;
 
 
 
