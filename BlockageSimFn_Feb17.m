@@ -1,4 +1,7 @@
-function output = BlockageSimFn_Feb17(s_input,AP_input)
+function output = BlockageSimFn_Feb17(s_input,AP_input, plot_input)
+% Update Feb 28: Save whole DataAP for all AP and BL density for all aID
+%               : Then write separate code for analysis and theoretical
+%               plots
 % BlockageSim_Feb17
 % Random Way-point mobility model for blockers
 % Simulating Blockage of nT number of APs.
@@ -19,8 +22,21 @@ rhoB=s_input.DENSITY_BL;
 V = 1; %m/s Attension!!!!!!!!!!!!!!!!!!!
 rhoT = AP_input.DENSITY_AP;
 nT = poissrnd(rhoT*pi*R^2);
-% nT=1
-if(nT==0), output=[0,0,0,0,0,0]; return; end % Dealing zero APs
+% nT=0
+if(nT==0)
+    output=[0,0,0,0,0,0];
+    
+    %%Just generating a dummy file when nT=0
+    dataAP =  cell(0,1);
+    indT = plot_input.indT;
+    indB = plot_input.indB;
+    aID = plot_input.aID;
+    save(strcat('dataAP_',num2str(aID),...
+        '_',num2str(indB),...
+        '_',num2str(indT),'.mat'),'dataAP')
+    
+    return;
+end % Dealing zero APs
 frac = AP_input.FRACTION;
 rT = R*sqrt(rand(nT,1)); %location of APs
 alphaT = 2*pi*rand(nT,1);%location of APs
@@ -77,13 +93,20 @@ if(wannaplot),figure; hold on; end
 
 for indT = 1:nT
     len =length(dataAP{indT});
-    dataAP{indT}(2,:) =  ceil(exprnd(1/mu,1,len)/tstep);
+    dataAP{indT}(2,:) =  exprnd(1/mu,1,len);
 end
 
+indT = plot_input.indT;
+indB = plot_input.indB;
+aID = plot_input.aID;
+save(strcat('dataAP_',num2str(aID),...
+    '_',num2str(indB),...
+    '_',num2str(indT),'.mat'),'dataAP')
+% csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)
 for indT = 1:nT
     %     blDur  = exprnd(1/mu);
     for timestamp = 1:length(dataAP{indT})
-        blDur  = ceil(dataAP{indT}(2,timestamp));
+        blDur  = ceil(dataAP{indT}(2,timestamp)/tstep);
         blTime = ceil(dataAP{indT}(1,timestamp)/tstep);
         if(blTime+blDur<=simTime/tstep)%avoid excess duration
             binary_seq(indT, blTime+1:1:(blTime+blDur))=1;

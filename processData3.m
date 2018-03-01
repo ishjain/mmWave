@@ -6,7 +6,7 @@
 
 close all
 clear
-nFiles = 97;
+nFiles = 200;
 densityBL = [0.01,0.1,0.2,0.5,0.65];
 densityAP = (1:.5:10)/10^4;
 for i=1:nFiles
