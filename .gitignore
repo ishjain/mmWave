@@ -1,3 +1,7 @@
 *.asv
 *.txt
 *.zip
+thesis/*.mat
+thesis/*.csv
+thesis*
+*png
