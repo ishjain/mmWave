@@ -21,6 +21,8 @@ tstep = 0.0001; %(sec) time step
 
 densityBL = [0.01,0.1,0.2,0.5,0.65];
 densityAP = (1:1:10)/10^4;
+aIDval = 10:1:100;
+
 
 count0BS = zeros(length(densityAP),length(densityBL));
 freq = zeros(length(densityAP),length(densityBL));
@@ -31,7 +33,7 @@ for indT = 1:length(densityAP)
         
         rhoB = densityBL(indB);
         rhoT = densityAP(indT);
-        for aID=10:1:100
+        for aID=1:length(aIDval);
             filename = strcat('dataAP_',num2str(aID),...
                 '_',num2str(indB),...
                 '_',num2str(indT),'.mat');
@@ -106,23 +108,7 @@ for indT = 1:length(densityAP)
             dur(indT,indB) = dur(indT,indB) + sum(allBl)*tstep/sum(diff(allBl)>0);
             probAllBl(indT,indB) = probAllBl(indT,indB) + sum(allBl)*tstep/simTime;
             end
-%             %%Get theoretical values !!!!Don't!!! Use another .m file!!!
-% %             V=1;
-% %             frac=0.087;
-% %             mu=2;
-% %             R
-%             temp = 2/pi*rhoB*V*frac;
-%             c = temp/mu;
-%             
-%             %%This is average frequency of blockage theoretical value
-%             % th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
-%             
-%             a = 1-2*mu./(R*temp) + 2*mu^2./(R^2*temp.^2).*log(1+temp.*R/mu);
-%             th_freqBl = mu*a.*rhoT*pi*R^2.*exp((a-1).*rhoT*pi*R^2);
-%             th_probAllBl = exp(-(1-a)*rhoT);
-%             
-%             th_durBl = 1/(nT*mu);
-%             % th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
+
             
             %%Return now
 %             output=[avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];

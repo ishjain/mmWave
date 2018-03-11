@@ -20,14 +20,14 @@ hr = 1.4;
 ht = 6;
 frac = (hb-hr)/(ht-hr);
 temp = 2/pi*rho_b*V*frac;
-mu = 7;
+mu = 2;
 c = temp/mu;
 wannaplot=0;
 Rval = 100;%sqrt(10^6/pi);
-Lval=(.1:.1:2)/100^2;%(.5:.5:10)/(1000)^2;
+Lval=(1:1:10)/100^2;%(.5:.5:10)/(1000)^2;
 count=0;
 
-for iter = 1:100
+for iter = 1:10
 %     count=count+1;
     for Rind=1:length(Rval)
         for Lind = 1:length(Lval)
