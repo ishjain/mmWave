@@ -11,7 +11,7 @@ close all;
 clear;
 
 %----Play-with-values---------------------------------------
-aID = 3%getenv('SLURM_ARRAY_TASK_ID')
+aID = getenv('SLURM_ARRAY_TASK_ID')
 rng('shuffle');
 wannaplot=0;
 V = 1; %velocity m/s

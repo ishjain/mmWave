@@ -25,7 +25,6 @@ nT = poissrnd(rhoT*pi*R^2);
 % nT=0
 if(nT==0)
     output=[0,0,0];
-    
     %%Just generating a dummy file when nT=0
 %     dataAP =  cell(0,1);
 %     indT = plot_input.indT;
