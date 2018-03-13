@@ -1,4 +1,5 @@
-%processData4: Got initial 800 and a total of 10000 iterations result.
+%processData4: Use mat file instead of CSV files to debug etc. 
+%Got initial 800 and a total of 10000 iterations result.
 % Mar 6th: In each iteration, APs selected according to PPP and blockers
 % move acc to random way point model. We save the freq and dur of blockage
 % of all AP for all blocker as time sequences. We have 10*5=50 such
@@ -22,7 +23,7 @@ tstep = 0.0001; %(sec) time step
 densityBL = [0.01,0.1,0.2,0.5,0.65];
 densityAP = (1:1:10)/10^4;
 aIDval = 10:1:100;
-
+naID = length(aIDval);
 
 count0BS = zeros(length(densityAP),length(densityBL));
 freq = zeros(length(densityAP),length(densityBL));
@@ -33,7 +34,8 @@ for indT = 1:length(densityAP)
         
         rhoB = densityBL(indB);
         rhoT = densityAP(indT);
-        for aID=1:length(aIDval);
+        for aIDind=1:length(aIDval);
+            aID = aIDval(aIDind);
             filename = strcat('dataAP_',num2str(aID),...
                 '_',num2str(indB),...
                 '_',num2str(indT),'.mat');
@@ -47,9 +49,9 @@ for indT = 1:length(densityAP)
             %%Here my goal is to deal witj nT = 0;
             if(nT==0)
                 count0BS(indT,indB) = count0BS(indT,indB)+1;
-                freq(indT,indB) = freq(indT,indB) + 0;
+%                 freq(indT,indB) = freq(indT,indB) + 0;
                 %dur(indT,indB) = dur(indT,indB) + sum(allBl)*tstep/sum(diff(allBl)>0);
-                probAllBl(indT,indB) = probAllBl(indT,indB) +1;
+%                 probAllBl(indT,indB) = probAllBl(indT,indB) +1;
                 
             else
             
@@ -104,7 +106,7 @@ for indT = 1:length(densityAP)
             
             
             %%Evaluate frequency and average duration of blockage
-            freq(n,indB) = freq(indT,indB)+sum(diff(allBl)>0)/simTime;
+            freq(indT,indB) = freq(indT,indB)+sum(diff(allBl)>0)/simTime;
             dur(indT,indB) = dur(indT,indB) + sum(allBl)*tstep/sum(diff(allBl)>0);
             probAllBl(indT,indB) = probAllBl(indT,indB) + sum(allBl)*tstep/simTime;
             end
@@ -119,3 +121,13 @@ for indT = 1:length(densityAP)
     end
     
 end
+%Take average now
+pBAvg= (probAllBl+count0BS)/naID;%!!!!wrong
+pBgivenAvg=probAllBl./(naID-count0BS);
+freqAvg = freq./(naID);
+freqGivenAvg = freq./(naID-count0BS);
+durAvg = dur./(naID-count0BS);
+
+
+
+
