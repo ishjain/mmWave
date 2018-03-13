@@ -11,7 +11,7 @@ close all;
 clear;
 
 %----Play-with-values---------------------------------------
-aID = getenv('SLURM_ARRAY_TASK_ID')
+aID = 3%getenv('SLURM_ARRAY_TASK_ID')
 rng('shuffle');
 wannaplot=0;
 V = 1; %velocity m/s
@@ -23,8 +23,8 @@ simTime = 60*10; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
-densityBL = [0.01,0.1,0.2,0.5,0.65];
-densityAP = (1:1:10)/10^4;
+densityBL = [0.005,0.01,0.05,0.1,0.2];
+densityAP = [1,10,20,50,100,200,500,1000]*10^(-6);%(1:1:10)/10^4;
 
 
 
@@ -37,9 +37,9 @@ for indB = 1:length(densityBL)
         nB = 4*R^2*rhoB;%=4000; %number of blokers
         
         rhoT = densityAP(indT);
-        plot_input = struct('indT',indT,...
-            'indB',indB,...
-            'aID',aID);
+%         plot_input = struct('indT',indT,...
+%             'indB',indB,...
+%             'aID',aID);
 
         s_input = struct('V_POSITION_X_INTERVAL',[-R R],...%(m)
             'V_POSITION_Y_INTERVAL',[-R R],...%(m)
@@ -58,7 +58,7 @@ for indB = 1:length(densityBL)
             'TIME_STEP',tstep,...
             'MU',mu,...
             'FRACTION',frac);
-        output = BlockageSimFn_Feb17(s_input,AP_input,plot_input);
+        output = BlockageSimFn_Feb17(s_input,AP_input);
         finaldata(:,indB,indT) = output;
 %         output is [avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
     end

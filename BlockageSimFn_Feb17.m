@@ -1,4 +1,4 @@
-function output = BlockageSimFn_Feb17(s_input,AP_input, plot_input)
+function output = BlockageSimFn_Feb17(s_input,AP_input)
 % Update Feb 28: Save whole DataAP for all AP and BL density for all aID
 %               : Then write separate code for analysis and theoretical
 %               plots
@@ -18,22 +18,22 @@ wannaplot = AP_input.WANNAPLOT; %1;
 R=AP_input.RADIUS_AROUND_UE; %m Radius
 nB = s_input.NB_NODES;%4*R^2*rho_b;%=4000; %number of blokers
 % nT = AP_input.nT; %number of APs
-rhoB=s_input.DENSITY_BL;
-V = 1; %m/s Attension!!!!!!!!!!!!!!!!!!!
+% rhoB=s_input.DENSITY_BL;
+% V = 1; %m/s Attension!!!!!!!!!!!!!!!!!!!
 rhoT = AP_input.DENSITY_AP;
 nT = poissrnd(rhoT*pi*R^2);
 % nT=0
 if(nT==0)
-    output=[0,0,0,0,0,0];
+    output=[0,0,0];
     
     %%Just generating a dummy file when nT=0
-    dataAP =  cell(0,1);
-    indT = plot_input.indT;
-    indB = plot_input.indB;
-    aID = plot_input.aID;
-    save(strcat('dataAP_',num2str(aID),...
-        '_',num2str(indB),...
-        '_',num2str(indT),'.mat'),'dataAP')
+%     dataAP =  cell(0,1);
+%     indT = plot_input.indT;
+%     indB = plot_input.indB;
+%     aID = plot_input.aID;
+%     save(strcat('dataAP_',num2str(aID),...
+%         '_',num2str(indB),...
+%         '_',num2str(indT),'.mat'),'dataAP')
     
     return;
 end % Dealing zero APs
@@ -96,12 +96,12 @@ for indT = 1:nT
     dataAP{indT}(2,:) =  exprnd(1/mu,1,len);
 end
 
-indT = plot_input.indT;
-indB = plot_input.indB;
-aID = plot_input.aID;
-save(strcat('dataAP_',num2str(aID),...
-    '_',num2str(indB),...
-    '_',num2str(indT),'.mat'),'dataAP')
+% indT = plot_input.indT;
+% indB = plot_input.indB;
+% aID = plot_input.aID;
+% save(strcat('dataAP_',num2str(aID),...
+%     '_',num2str(indB),...
+%     '_',num2str(indT),'.mat'),'dataAP')
 % csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)
 for indT = 1:nT
     %     blDur  = exprnd(1/mu);
@@ -135,22 +135,22 @@ avgFreq = sum(diff(allBl)>0)/simTime;
 avgDur = sum(allBl)*tstep/sum(diff(allBl)>0);
 probAllBl = sum(allBl)*tstep/simTime;
 
-%%Get theoretical values
-temp = 2/pi*rhoB*V*frac;
-c = temp/mu;
-
-%%This is average frequency of blockage theoretical value
-% th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
-        
-a = 1-2*mu./(R*temp) + 2*mu^2./(R^2*temp.^2).*log(1+temp.*R/mu);
-th_freqBl = mu*a.*rhoT*pi*R^2.*exp((a-1).*rhoT*pi*R^2);
-th_probAllBl = exp(-(1-a)*rhoT);
-
-th_durBl = 1/(nT*mu);
-% th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
+% %%Get theoretical values
+% temp = 2/pi*rhoB*V*frac;
+% c = temp/mu;
+% 
+% %%This is average frequency of blockage theoretical value
+% % th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
+%         
+% a = 1-2*mu./(R*temp) + 2*mu^2./(R^2*temp.^2).*log(1+temp.*R/mu);
+% th_freqBl = mu*a.*rhoT*pi*R^2.*exp((a-1).*rhoT*pi*R^2);
+% th_probAllBl = exp(-(1-a)*rhoT);
+% 
+% th_durBl = 1/(nT*mu);
+% % th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
 
 %%Return now
-output=[avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
+output=[avgFreq,avgDur,probAllBl];
 
 
 end
