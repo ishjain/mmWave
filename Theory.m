@@ -48,31 +48,40 @@ for indT = 1:length(densityAP)
         freqCond(indT,indB) = (freq(indT,indB))./(1-pnn0(indT));
         
         %5. Conditional expectation of duration of bl given n!=0
-        durCond(indT,indB) = pnn0(indT)/(1-pnn0(indT))*Ei(indT)/mu;
+        
 
+        %This is used to get 
+        b(indT) = lamT*pi*R^2;
+        ab(indT,indB) = a(indB)*b(indT);
+        Ei(indT,indB) = ei(ab(indT,indB))-log(ab(indT,indB))-0.5772;
+        
+        durCond(indT,indB) = pnn0(indT)*Ei(indT,indB)/(mu*(1-pnn0(indT)));
     end
 end
 
 %save csv file
 allData = [pB,pBgiven,freq,freqCond,durCond];
-csvwrite('theoryData.csv',allData);
-
+csvwrite('figures2/theory_pB.csv',[densityAP;pB']');
+csvwrite('figures2/theory_pBCond.csv',[densityAP;pBgiven']');
+csvwrite('figures2/theory_freq.csv',[densityAP;freq']');
+csvwrite('figures2/theory_freqCond.csv',[densityAP;freqCond']');
+csvwrite('figures2/theory_durCond.csv',[densityAP;durCond']');
 %Plot
 if(wannaplot)
     figure(1);
-    plot(densityAP,pB); 
+    semilogy(densityAP,pB); 
     ylim([1e-4,1]);title('Marginal prob of Blockage')
     
     figure(2);
-    plot(densityAP,pBgiven); title('Conditional prob of Bl given n!=0')
+    semilogy(densityAP,pBgiven); title('Conditional prob of Bl given n!=0')
     ylim([1e-4,1])
     
     figure(3);
-    plot(densityAP,freq)
+    semilogy(densityAP,freq)
     title('Expected Freq of blockage')
 %     ylim([1e-4,1])
         figure(4);
-    plot(densityAP,freqCond);
+    semilogy(densityAP,freqCond);
     title('Conditional expectation of freq of bl given n!=0')
 %     ylim([1e-4,1])
         figure(5);
