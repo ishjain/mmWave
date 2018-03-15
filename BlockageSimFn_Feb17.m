@@ -17,30 +17,28 @@ wannaplot = AP_input.WANNAPLOT; %1;
 
 R=AP_input.RADIUS_AROUND_UE; %m Radius
 nB = s_input.NB_NODES;%4*R^2*rho_b;%=4000; %number of blokers
-% nT = AP_input.nT; %number of APs
-% rhoB=s_input.DENSITY_BL;
-% V = 1; %m/s Attension!!!!!!!!!!!!!!!!!!!
 rhoT = AP_input.DENSITY_AP;
-nT = poissrnd(rhoT*pi*R^2);
+nTorig = poissrnd(rhoT*pi*R^2)
+
+frac = AP_input.FRACTION;
+rT = R*sqrt(rand(nTorig,1)); %location of APs
+alphaT = 2*pi*rand(nTorig,1);%location of APs
+
+
+
+omega = AP_input.SELF_BL_ANGLE_OMEGA;    
+tempInd =  find(alphaT>omega);
+xT = rT(tempInd).*cos(alphaT(tempInd));%location of APs
+yT = rT(tempInd).*sin(alphaT(tempInd));%location of APs
+nT = length(tempInd)
 % nT=0
 if(nT==0)
-    output=[0,0,0];
-    %%Just generating a dummy file when nT=0
-%     dataAP =  cell(0,1);
-%     indT = plot_input.indT;
-%     indB = plot_input.indB;
-%     aID = plot_input.aID;
-%     save(strcat('dataAP_',num2str(aID),...
-%         '_',num2str(indB),...
-%         '_',num2str(indT),'.mat'),'dataAP')
-    
+    output=[0,0,0];   
     return;
 end % Dealing zero APs
-frac = AP_input.FRACTION;
-rT = R*sqrt(rand(nT,1)); %location of APs
-alphaT = 2*pi*rand(nT,1);%location of APs
-xT = rT.*cos(alphaT);%location of APs
-yT = rT.*sin(alphaT);%location of APs
+   
+% xT = rT.*cos(alphaT);%location of APs
+% yT = rT.*sin(alphaT);%location of APs
 xTfrac = frac*xT; %blockage zone around UE for each APs
 yTfrac = frac*yT;
 locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
@@ -108,13 +106,13 @@ for indT = 1:nT
         blDur  = ceil(dataAP{indT}(2,timestamp)/tstep);
         blTime = ceil(dataAP{indT}(1,timestamp)/tstep);
         if(blTime+blDur<=simTime/tstep)%avoid excess duration
-            binary_seq(indT, blTime+1:1:(blTime+blDur))=1;
+            binary_seq(indT, blTime+1:1:(blTime+blDur))=binary_seq(indT, blTime+1:1:(blTime+blDur))+1;
         end
     end
     allBl = allBl & binary_seq(indT,:);
     if(wannaplot)
         subplot(nT+1,1,indT)
-        plot(binary_seq(indT,:), 'lineWidth',4)
+        plot(binary_seq(indT,1:10/tstep), 'lineWidth',4)
         set(gca,'xtick',[])
         set(gca,'xticklabel',[])
         set(gca,'ytick',[])
@@ -123,7 +121,7 @@ for indT = 1:nT
 end
 if(wannaplot)
     subplot(nT+1,1,nT+1)
-    plot(Tval,allBl,'r-', 'lineWidth',4)
+    plot(Tval(1:10/tstep),allBl(1:10/tstep),'r-', 'lineWidth',4)
     xlabel('Time (sec)')
 end
 % plot(binary_seq(1,:), 'lineWidth',4)
@@ -149,7 +147,7 @@ probAllBl = sum(allBl)*tstep/simTime;
 % % th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
 
 %%Return now
-output=[avgFreq,avgDur,probAllBl];
+output=[avgFreq,avgDur,probAllBl,nTorig,nT];
 
 
 end
