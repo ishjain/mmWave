@@ -19,7 +19,7 @@ densityBL = [0.01,0.1,0.2,0.5,0.65];
 densityAP = (1:1:10)/10^4;
  
 %calculat Ei by wolform alpha for given lambdaAP and R=100;
-Ei = [9.21,105.059, 1499.93, 25031.9, 453682, 8.6341e6, 1.697e8, 3.41357e9, 6.9864e10, 1.4493e12];
+% Ei = [9.21,105.059, 1499.93, 25031.9, 453682, 8.6341e6, 1.697e8, 3.41357e9, 6.9864e10, 1.4493e12];
 
 % !!!-------------------------------!!!
 pB = zeros(length(densityAP),length(densityBL));
@@ -52,10 +52,15 @@ for indT = 1:length(densityAP)
 
         %This is used to get 
         b(indT) = lamT*pi*R^2;
-        ab(indT,indB) = a(indB)*b(indT);
+        ab(indT,indB) = b(indT);% a(indB)*b(indT);
         Ei(indT,indB) = ei(ab(indT,indB))-log(ab(indT,indB))-0.5772;
         
-        durCond(indT,indB) = pnn0(indT)*Ei(indT,indB)/(mu*(1-pnn0(indT)));
+        durCond1(indT,indB) = pnn0(indT)*Ei(indT,indB)/(mu*(1-pnn0(indT)));
+        
+        nn = poissrnd(lamT*pi*R^2,1,1000);
+        nn_n0 = nn(nn~=0);
+        durCond(indT,indB) = mean(1./(nn_n0*2));
+        durCond3(indT,indB) = pBgiven(indT,indB)/freqCond(indT,indB);
     end
 end
 
@@ -86,6 +91,10 @@ if(wannaplot)
 %     ylim([1e-4,1])
         figure(5);
    semilogy(densityAP,durCond)
+   hold on
+    semilogy(densityAP,durCond1)
+    semilogy(densityAP,durCond3)
+    legend('new','old','divide')
     title('Conditional expectation of duration of bl given n!=0')
     
     
