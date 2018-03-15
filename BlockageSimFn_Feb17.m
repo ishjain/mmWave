@@ -102,7 +102,7 @@ end
 % csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)
 for indT = 1:nT
     %     blDur  = exprnd(1/mu);
-    for timestamp = 1:length(dataAP{indT})
+    for timestamp = 1:size(dataAP{indT},2)
         blDur  = ceil(dataAP{indT}(2,timestamp)/tstep);
         blTime = ceil(dataAP{indT}(1,timestamp)/tstep);
         if(blTime+blDur<=simTime/tstep)%avoid excess duration
