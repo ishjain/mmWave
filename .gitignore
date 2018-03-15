@@ -1,9 +1,14 @@
 *.asv
 *.txt
 *.zip
+*tar*
 thesis/*.mat
 thesis/*.csv
 thesis*
 *png
 Data4*
 Data5*
+temp*
+Data*
+figures2/*
+*mp4*
