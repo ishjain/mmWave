@@ -33,7 +33,7 @@ yT = rT(tempInd).*sin(alphaT(tempInd));%location of APs
 nT = length(tempInd)
 % nT=0
 if(nT==0)
-    output=[0,0,0];   
+    output=[0,0,0,nTorig,nT];   
     return;
 end % Dealing zero APs
    

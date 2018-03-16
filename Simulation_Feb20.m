@@ -13,13 +13,13 @@ clear;
 %----Play-with-values---------------------------------------
 aID = getenv('SLURM_ARRAY_TASK_ID')
 rng('shuffle');
-wannaplot=1;
+wannaplot=0;
 V = 1; %velocity m/s
 hb = 1.8;
 hr = 1.4;
 ht = 5;
 frac = (hb-hr)/(ht-hr);
-simTime = 60*10; %sec Total Simulation time
+simTime = 60*60; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
@@ -33,9 +33,9 @@ omegaVal = [0, pi/3, pi/2, 2*pi/3];
 % for iter=1:MAX
 for indB = 1%length(densityBL)
     for indT = 1%length(densityAP)
-        for indO = 2%:length(omegaVal)
+        for indO = 1%:length(omegaVal)
             omega = omegaVal(indO);
-            rhoB = 3;%densityBL(indB);%0.65;%Rajeev calculated central park
+            rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
             nB = 4*R^2*rhoB;%=4000; %number of blokers
             
             rhoT = densityAP(indT);
