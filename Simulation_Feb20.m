@@ -33,12 +33,12 @@ omegaVal = [0, pi/3, pi/2];
 
 finaldata = zeros(5,length(densityBL),length(densityAP),length(omegaVal));
 
-for indT = 1:length(densityBL)
+for indT = 1:length(densityAP)
     rhoT = densityAP(indT);
     nTorig = poissrnd(rhoT*pi*R^2); %original AP number (without self-block)
     rT = R*sqrt(rand(nTorig,1)); %location of APs
     alphaT = 2*pi*rand(nTorig,1);%location of APs
-    for indB = 1:length(densityAP)
+    for indB = 1:length(densityBL)
         for indO = 1:length(omegaVal)
             omega = omegaVal(indO);
             rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
@@ -66,7 +66,7 @@ for indT = 1:length(densityBL)
                 'LOC_AP_DISTANCE', rT,...
                 'LOC_AP_ANGLE',alphaT);
             output = BlockageSimFn_Feb17(s_input,AP_input);
-            finaldata(:,indB,indT,indO) = output;
+            finaldata(:,indT,indB,indO) = output;
             %         output is [avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
         end
         % end
