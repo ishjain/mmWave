@@ -32,15 +32,14 @@ omegaVal = [0, pi/3, pi/2];
 % psi = 2*pi - omega;
 
 finaldata = zeros(5,length(densityBL),length(densityAP),length(omegaVal));
-% MAX=200;
-% for iter=1:MAX
-for indT = 5%length(densityBL)
+
+for indT = 1:length(densityBL)
     rhoT = densityAP(indT);
     nTorig = poissrnd(rhoT*pi*R^2); %original AP number (without self-block)
     rT = R*sqrt(rand(nTorig,1)); %location of APs
     alphaT = 2*pi*rand(nTorig,1);%location of APs
-    for indB = 1%length(densityAP)
-        for indO = 3%:length(omegaVal)
+    for indB = 1:length(densityAP)
+        for indO = 1:length(omegaVal)
             omega = omegaVal(indO);
             rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
             nB = 4*R^2*rhoB;%=4000; %number of blokers
