@@ -15,22 +15,19 @@ function output = BlockageSimFn_Feb17(s_input,AP_input)
 %----Play-with-values-here--------------------------------------
 wannaplot = AP_input.WANNAPLOT; %1;
 
-R=AP_input.RADIUS_AROUND_UE; %m Radius
 nB = s_input.NB_NODES;%4*R^2*rho_b;%=4000; %number of blokers
-rhoT = AP_input.DENSITY_AP;
-nTorig = poissrnd(rhoT*pi*R^2)
+
+nTorig = AP_input.Original_NUM_AP;
+rT =AP_input.LOC_AP_DISTANCE; %location of APs
+alphaTorig = AP_input.LOC_AP_ANGLE;%location of APs
 
 frac = AP_input.FRACTION;
-rT = R*sqrt(rand(nTorig,1)); %location of APs
-alphaT = 2*pi*rand(nTorig,1);%location of APs
-
-
-
-omega = AP_input.SELF_BL_ANGLE_OMEGA;    
-tempInd =  find(alphaT>omega);
-xT = rT(tempInd).*cos(alphaT(tempInd));%location of APs
-yT = rT(tempInd).*sin(alphaT(tempInd));%location of APs
-nT = length(tempInd)
+omega = AP_input.SELF_BL_ANGLE_OMEGA;  
+% psirand = 
+tempInd =  find(alphaTorig>=omega);
+xT = rT(tempInd).*cos(alphaTorig(tempInd));%location of APs
+yT = rT(tempInd).*sin(alphaTorig(tempInd));%location of APs
+nT = length(tempInd);
 % nT=0
 if(nT==0)
     output=[0,0,0,nTorig,nT];   
@@ -42,7 +39,7 @@ end % Dealing zero APs
 xTfrac = frac*xT; %blockage zone around UE for each APs
 yTfrac = frac*yT;
 locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
-
+alphaT = alphaTorig(tempInd);
 
 
 simTime = AP_input.SIMULATION_TIME; %sec Total Simulation time
