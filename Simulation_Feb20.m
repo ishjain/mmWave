@@ -1,4 +1,7 @@
 % Simulation_Feb20
+%Apr3: Generate BS number and location once here and run for various
+%blocker density and various omega. Earlier it was di=one in BlockageSimFn
+
 % Mar14: Added code for self blockage (omega) and modified bl/AP densities
 % Update Feb20: Generate AP location using PPP
 
@@ -23,25 +26,24 @@ simTime = 60*60; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
-densityBL = [0.1,0.2];
-densityAP = [10,20,50,100,200,500]*10^(-6);%(1:1:10)/10^4;
-omegaVal = [0, pi/3, pi/2, 2*pi/3];
+densityBL = [0.01,0.1,0.2];
+densityAP = [50,100,200,300,400,500,600]*10^(-6);%(1:1:10)/10^4;
+omegaVal = [0, pi/3, pi/2];
 % psi = 2*pi - omega;
 
-
+finaldata = zeros(5,length(densityBL),length(densityAP),length(omegaVal));
 % MAX=200;
 % for iter=1:MAX
-for indB = 1%length(densityBL)
-    for indT = 1%length(densityAP)
-        for indO = 1%:length(omegaVal)
+for indT = 5%length(densityBL)
+    rhoT = densityAP(indT);
+    nTorig = poissrnd(rhoT*pi*R^2); %original AP number (without self-block)
+    rT = R*sqrt(rand(nTorig,1)); %location of APs
+    alphaT = 2*pi*rand(nTorig,1);%location of APs
+    for indB = 1%length(densityAP)
+        for indO = 3%:length(omegaVal)
             omega = omegaVal(indO);
             rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
             nB = 4*R^2*rhoB;%=4000; %number of blokers
-            
-            rhoT = densityAP(indT);
-            %         plot_input = struct('indT',indT,...
-            %             'indB',indB,...
-            %             'aID',aID);
             
             s_input = struct('V_POSITION_X_INTERVAL',[-R R],...%(m)
                 'V_POSITION_Y_INTERVAL',[-R R],...%(m)
@@ -60,7 +62,10 @@ for indB = 1%length(densityBL)
                 'TIME_STEP',tstep,...
                 'MU',mu,...
                 'FRACTION',frac,...
-                'SELF_BL_ANGLE_OMEGA',omega);
+                'SELF_BL_ANGLE_OMEGA',omega,...
+                'Original_NUM_AP',nTorig,...
+                'LOC_AP_DISTANCE', rT,...
+                'LOC_AP_ANGLE',alphaT);
             output = BlockageSimFn_Feb17(s_input,AP_input);
             finaldata(:,indB,indT,indO) = output;
             %         output is [avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
