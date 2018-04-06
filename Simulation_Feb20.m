@@ -22,7 +22,7 @@ hb = 1.8;
 hr = 1.4;
 ht = 5;
 frac = (hb-hr)/(ht-hr);
-simTime = 60*60; %sec Total Simulation time
+simTime = 10*60*60; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
@@ -31,7 +31,7 @@ densityAP = [50,100,200,300,400,500,600]*10^(-6);%(1:1:10)/10^4;
 omegaVal = [0, pi/3, pi/2];
 % psi = 2*pi - omega;
 
-finaldata = zeros(5,length(densityBL),length(densityAP),length(omegaVal));
+finaldata = zeros(5,length(densityAP),length(densityBL),length(omegaVal));
 
 for indT = 1:length(densityAP)
     rhoT = densityAP(indT);
@@ -69,8 +69,6 @@ for indT = 1:length(densityAP)
             finaldata(:,indT,indB,indO) = output;
             %         output is [avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
         end
-        % end
-        % finaldata(:,:,iter) = output;
     end
 end
 
