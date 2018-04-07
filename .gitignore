@@ -2,8 +2,6 @@
 *.txt
 *.zip
 *tar*
-thesis/*.mat
-thesis/*.csv
 thesis*
 *png
 temp*
