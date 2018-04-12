@@ -2,14 +2,11 @@
 *.txt
 *.zip
 *tar*
-thesis/*.mat
-thesis/*.csv
 thesis*
 *png
-Data4*
-Data5*
-Data6Ish/*
 temp*
-Data*
 figures2/*
 *mp4*
+Archive/*
+Data*
+plots*
