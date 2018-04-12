@@ -1,4 +1,5 @@
-function output = BlockageSimFn_Feb17(s_input,AP_input)
+function output = BlockageSimFn_Feb17(s_mobility,AP_input)
+%Update Apr13: Move s_mobility to Simulation.m
 % Update Feb 28: Save whole DataAP for all AP and BL density for all aID
 %               : Then write separate code for analysis and theoretical
 %               plots
@@ -15,7 +16,7 @@ function output = BlockageSimFn_Feb17(s_input,AP_input)
 %----Play-with-values-here--------------------------------------
 wannaplot = AP_input.WANNAPLOT; %1;
 
-nB = s_input.NB_NODES;%4*R^2*rho_b;%=4000; %number of blokers
+nB = AP_input.NUM_BL;%4*R^2*rho_b;%=4000; %number of blokers
 
 nTorig = AP_input.Original_NUM_AP;
 rT =AP_input.LOC_AP_DISTANCE; %location of APs
@@ -23,7 +24,7 @@ alphaTorig = AP_input.LOC_AP_ANGLE;%location of APs
 
 frac = AP_input.FRACTION;
 omega = AP_input.SELF_BL_ANGLE_OMEGA;  
-% psirand = 
+
 tempInd =  find(alphaTorig>=omega);
 xT = rT(tempInd).*cos(alphaTorig(tempInd));%location of APs
 yT = rT(tempInd).*sin(alphaTorig(tempInd));%location of APs
@@ -40,22 +41,24 @@ xTfrac = frac*xT; %blockage zone around UE for each APs
 yTfrac = frac*yT;
 locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
 alphaT = alphaTorig(tempInd);
-
-
 simTime = AP_input.SIMULATION_TIME; %sec Total Simulation time
 tstep = AP_input.TIME_STEP; %(sec) time step
 mu = AP_input.MU; %Expected bloc dur =1/mu
+
+%---------------I am moving this to Sim...m--------
 % locT = AP_input.T_EFF_LOCATION; %AP location
 % alphaT = AP_input.T_ANGLE;
 
-s_mobility = Generate_Mobility(s_input);
+% s_mobility = Generate_Mobility(s_input);  
 
 %------------------------------------------------------
 
 dataAP = cell(nT,1); %contain array of timestamps for all APs no matter which blocker
 
 for indB = 1:nB %for every blocker
+    
     for iter =1:(length(s_mobility.VS_NODE(indB).V_POSITION_X)-1)
+        
         % for every time blocker changes direction
         loc0 = [s_mobility.VS_NODE(indB).V_POSITION_X(iter);...
             s_mobility.VS_NODE(indB).V_POSITION_Y(iter)];
@@ -123,28 +126,12 @@ if(wannaplot)
 end
 % plot(binary_seq(1,:), 'lineWidth',4)
 
-
 %%Evaluate frequency and average duration of blockage
 avgFreq = sum(diff(allBl)>0)/simTime;
 avgDur = sum(allBl)*tstep/sum(diff(allBl)>0);
 probAllBl = sum(allBl)*tstep/simTime;
 
-% %%Get theoretical values
-% temp = 2/pi*rhoB*V*frac;
-% c = temp/mu;
-% 
-% %%This is average frequency of blockage theoretical value
-% % th_freqBl = 2/pi*rhoB*V*frac*sum(rT); % Theoretical rate of blocking 1 AP
-%         
-% a = 1-2*mu./(R*temp) + 2*mu^2./(R^2*temp.^2).*log(1+temp.*R/mu);
-% th_freqBl = mu*a.*rhoT*pi*R^2.*exp((a-1).*rhoT*pi*R^2);
-% th_probAllBl = exp(-(1-a)*rhoT);
-% 
-% th_durBl = 1/(nT*mu);
-% % th_probAllBl = exp(-2*pi.*R.*rhoT/c).*(1+c*R).^(2*pi.*rhoT/c^2);
-
 %%Return now
 output=[avgFreq,avgDur,probAllBl,nTorig,nT];
-
 
 end

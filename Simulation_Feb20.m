@@ -16,7 +16,7 @@ clear;
 %----Play-with-values---------------------------------------
 aID = getenv('SLURM_ARRAY_TASK_ID')
 rng('shuffle');
-wannaplot=0;
+wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
 hr = 1.4;
@@ -26,33 +26,37 @@ simTime = 10*60*60; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
-densityBL = [0.01,0.1,0.2];
+densityBL = [0.01,0.02];
 densityAP = [50,100,200,300,400,500,600]*10^(-6);%(1:1:10)/10^4;
-omegaVal = [0, pi/3, pi/2];
-% psi = 2*pi - omega;
+omegaVal = [0, pi/3];
 
+s_input = cell(1,2);
+s_mobility = cell(1,2);
+for indB=1:length(densityBL)
+s_input{indB} = struct('V_POSITION_X_INTERVAL',[-R R],...%(m)
+    'V_POSITION_Y_INTERVAL',[-R R],...%(m)
+    'V_SPEED_INTERVAL',[V V],...%(m/s)
+    'V_PAUSE_INTERVAL',[0 0],...%pause time (s)
+    'V_WALK_INTERVAL',[1.00 60.00],...%walk time (s)
+    'V_DIRECTION_INTERVAL',[-180 180],...%(degrees)
+    'SIMULATION_TIME',simTime,...%(s)
+    'NB_NODES',4*R^2*densityBL(indB));
+s_mobility{indB} = Generate_Mobility(s_input{indB});
+end
 finaldata = zeros(5,length(densityAP),length(densityBL),length(omegaVal));
 
 for indT = 1:length(densityAP)
-    rhoT = densityAP(indT);
-    nTorig = poissrnd(rhoT*pi*R^2); %original AP number (without self-block)
-    rT = R*sqrt(rand(nTorig,1)); %location of APs
-    alphaT = 2*pi*rand(nTorig,1);%location of APs
+        rhoT = densityAP(indT);
+        nTorig = poissrnd(rhoT*pi*R^2); %original AP number (without self-block)
+        rT = R*sqrt(rand(nTorig,1)); %location of APs
+        alphaT = 2*pi*rand(nTorig,1);%location of APs
     for indB = 1:length(densityBL)
+        
+        
         for indO = 1:length(omegaVal)
             omega = omegaVal(indO);
             rhoB = densityBL(indB);%0.65;%Rajeev calculated central park
             nB = 4*R^2*rhoB;%=4000; %number of blokers
-            
-            s_input = struct('V_POSITION_X_INTERVAL',[-R R],...%(m)
-                'V_POSITION_Y_INTERVAL',[-R R],...%(m)
-                'V_SPEED_INTERVAL',[V V],...%(m/s)
-                'V_PAUSE_INTERVAL',[0 0],...%pause time (s)
-                'V_WALK_INTERVAL',[1.00 60.00],...%walk time (s)
-                'V_DIRECTION_INTERVAL',[-180 180],...%(degrees)
-                'SIMULATION_TIME',simTime,...%(s)
-                'NB_NODES',nB,...
-                'DENSITY_BL',rhoB);
             
             AP_input = struct('WANNAPLOT',wannaplot,...
                 'RADIUS_AROUND_UE',R,...
@@ -64,8 +68,9 @@ for indT = 1:length(densityAP)
                 'SELF_BL_ANGLE_OMEGA',omega,...
                 'Original_NUM_AP',nTorig,...
                 'LOC_AP_DISTANCE', rT,...
-                'LOC_AP_ANGLE',alphaT);
-            output = BlockageSimFn_Feb17(s_input,AP_input);
+                'LOC_AP_ANGLE',alphaT,...
+                'NUM_BL',nB);
+            output = BlockageSimFn_Feb17(s_mobility{indB},AP_input);
             finaldata(:,indT,indB,indO) = output;
             %         output is [avgFreq,avgDur,probAllBl,th_freqBl,th_durBl,th_probAllBl];
         end
