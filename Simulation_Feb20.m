@@ -22,12 +22,12 @@ hb = 1.8;
 hr = 1.4;
 ht = 5;
 frac = (hb-hr)/(ht-hr);
-simTime = 10*60*60; %sec Total Simulation time
+simTime = 3*60*60; %sec Total Simulation time
 tstep = 0.0001; %(sec) time step
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
-densityBL = [0.01,0.02];
-densityAP = [50,100,200,300,400,500,600]*10^(-6);%(1:1:10)/10^4;
+densityBL = [0.005,0.01];
+densityAP = [50,100,200,300,400,500]*10^(-6);%(1:1:10)/10^4;
 omegaVal = [0, pi/3];
 
 s_input = cell(1,2);
