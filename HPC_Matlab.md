@@ -2,8 +2,8 @@
 
 Step-1: Use Git-Bash in Windows (or terminal in Linux) and login to hpc
 ```
-$ ssh ikj211@prince.hpc.nyu.edu
-ikj211@prince.hpc.nyu.edu's password:
+$ ssh <your-net-ID>@prince.hpc.nyu.edu
+<your-net-ID>@prince.hpc.nyu.edu's password:
 ```
 
 (Optional): Check your Quota
@@ -48,7 +48,7 @@ module load matlab/2017b
 RUNDIR=$SCRATCH/mmWave/
 cd $RUNDIR
 
-matlab -nodisplay -nodesktop -r "run Simulation_Feb20.m"
+matlab -nodisplay -nodesktop -r "run Simulation_Feb20.m" //Change the filename here
 ```
 (Optional): Check the modules. You will find matlab/2017b
 ```
@@ -72,7 +72,8 @@ $ ls -lastr
 
 ```
 
-Step-6: When running the same code many times (atmost 400), use a `wrapper.m` file. In this file we first get the environment variable `aID = getenv('SLURM_ARRAY_TASK_ID')`. Every run time it gives a different id. So, you can use these id to seed the random generator and use them to name the output file. Note: `aID` is an array, so first convert to int for seed.
+Step-6: When running the same code many times (atmost 400). In the main file "Simulation_Feb20.m", we first get the environment variable `aID = getenv('SLURM_ARRAY_TASK_ID')`. The aID is different for different parallel computations. So, you can use these id to seed the random generator and use them to name the output file. Note: `aID` is an array, so first convert to int for seed.
 ```
 sbatch --array=1-100 mybatch.sbatch
 ```
+This above command runs the main code on 100 parallel machines with `aID` ranging from 1 to 100.
