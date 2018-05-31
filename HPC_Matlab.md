@@ -1,8 +1,18 @@
 # Running Matlab code at High Performance Computing (HPC) cluster at NYU.
 
-Step-1: Use Git-Bash in Windows (or terminal in Linux) and login to hpc
+Step-1: Use Git-Bash in Windows (or terminal in Linux) and [login to hpc](https://wikis.nyu.edu/display/NYUHPC/Logging+in+to+the+NYU+HPC+Clusters) as follow
+
+*    From NYU
 ```
 $ ssh <your-net-ID>@prince.hpc.nyu.edu
+<your-net-ID>@prince.hpc.nyu.edu's password:
+```
+*    Outside NYU
+```
+$ ssh <your-net-ID>@gw.hpc.nyu.edu
+<your-net-ID>@prince.hpc.nyu.edu's password:
+
+$ ssh prince.hpc.nyu.edu
 <your-net-ID>@prince.hpc.nyu.edu's password:
 ```
 
@@ -62,7 +72,7 @@ Submitted batch job 4605025
 ```
 (Optional): Check the job queue
 ```
-$ squeue -u ikj211
+$ squeue -u <your-net-ID>
 JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
 4605025    c32_38   myTest   ikj211  R       0:14      1 c32-01
 ```
