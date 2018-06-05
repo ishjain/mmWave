@@ -63,8 +63,11 @@ for indO = 1:length(omegaVal)
         lamB = densityBL(indB);
         C = temp*lamB;
         condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=100))).*2.*r/d^2 * 1/(2*pi);
-        results(indB) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),0,d,'ArrayValued',true);        
+        tic
+        results(indB,indO) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),0,d,'ArrayValued',true);        
+        toc
     end
+    
 end
 % end
 csvwrite(strcat('output',num2str(aID),'.csv'),results)
