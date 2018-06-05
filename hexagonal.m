@@ -1,7 +1,7 @@
 % May23: generate hexagonal cell theoretical results.
 %May 20: hexagon
 % numerical analysis with hexagonal cells
-% Run  sbatch --array=1-6 mybatch.sbatch
+% Run  sbatch --array=1-6 mybatch.sbatch %for 6 values of AP density
 
 clear
 close all
@@ -14,11 +14,15 @@ omegaVal = [0, pi/3, pi/2];
 
 indT = str2num(aID);
 lamT = densityAP(indT); %lambda
-D = sqrt(2./(3*sqrt(3)*lamT));
-ri=[repmat(sqrt(3)*D,1,6) repmat(3*D,1,6) repmat(2*sqrt(3)*D,1,6)];
-phi = [pi/6, -pi/6, pi/2, -pi/2, 5*pi/6, -5*pi/6,...
+d = sqrt(2./(3*sqrt(3)*lamT));
+ri=[0,repmat(sqrt(3)*d,1,6) repmat(3*d,1,6) repmat(2*sqrt(3)*d,1,6),...
+    repmat(sqrt(21)*d,1,12),repmat(3*sqrt(3)*d,1,6)];
+phi = [0, pi/6, -pi/6, pi/2, -pi/2, 5*pi/6, -5*pi/6,...
     0, pi/3, -pi/3, 2*pi/3, -2*pi/3, pi,...
-    pi/6, -pi/6, pi/2, -pi/2, 5*pi/6, -5*pi/6 ];
+    pi/6, -pi/6, pi/2, -pi/2, 5*pi/6, -5*pi/6,...
+    0.06*pi, -0.06*pi, pi/3+0.06*pi, pi/3-0.06*pi, -pi/3+0.06*pi, -pi/3-0.06*pi,...
+    2*pi/3+0.06*pi, 2*pi/3-0.06*pi, -2*pi/3+0.06*pi, -2*pi/3-0.06*pi,...
+    pi-0.06*pi, -pi+0.06*pi];
 di = @(r,theta) sqrt(ri.^2+r.^2-2*ri.*r.*cos(phi-theta));
 
 V = 1; %velocity m/s
@@ -41,9 +45,9 @@ for indB = 1:length(densityBL)
     C = temp*lamB;
     
     
-    condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=100))).*2.*r/D^2 * 1/(2*pi);
+    condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=100))).*2.*r/d^2 * 1/(2*pi);
     
-    results(indB) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),0,D,'ArrayValued',true);
+    results(indB) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),0,d,'ArrayValued',true);
     
     
     %         end
