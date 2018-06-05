@@ -45,6 +45,7 @@ hb = 1.8;
 hr = 1.4;
 ht = 5;
 mu = 2;
+R=100;
 frac = (hb-hr)/(ht-hr);
 temp = 2/pi*V*frac;
 % lamB = 0.1;
@@ -62,9 +63,11 @@ for indO = 1:length(omegaVal)
     for indB = 1:length(densityBL)
         lamB = densityBL(indB);
         C = temp*lamB;
-        condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=100))).*2.*r/d^2 * 1/(2*pi);
+        condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=R))).*...
+            2.*r/d^2 * 1/(2*pi);
         tic
-        results(indB,indO) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),0,d,'ArrayValued',true);        
+        results(indB,indO) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),...
+            0,d,'ArrayValued',true);        
         toc
     end
     
