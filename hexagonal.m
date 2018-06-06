@@ -52,7 +52,7 @@ temp = 2/pi*V*frac;
 
 
 % for indT = 1:length(densityAP)
-%iterate over BS density
+% iterate over BS density
 for indO = 1:length(omegaVal)
     if(indO==1)
         di = @(r,theta) sqrt(ri.^2+r.^2-2*ri.*r.*cos(phi-theta));
