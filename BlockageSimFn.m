@@ -1,34 +1,34 @@
-function output = BlockageSimFn_Feb17(s_mobility,AP_input)
-%Update Apr13: Move s_mobility to Simulation.m
-% Update Feb 28: Save whole DataAP for all AP and BL density for all aID
+function output = BlockageSimFn(s_mobility,BS_input)
+% Update Jun6:BlockageSimFn.m renamed the function and few other parameter's name.
+% Update Apr13: Move s_mobility to Simulation.m
+% Update Feb 28: Save whole dataBS for all BS and BL density for all aID
 %               : Then write separate code for analysis and theoretical
 %               plots
 % BlockageSim_Feb17
 % Random Way-point mobility model for blockers
-% Simulating Blockage of nT number of APs.
+% Simulating Blockage of nT number of BSs.
 % Generate time sequence of blocked/unblocked periods
 % AND operator on all those nT time sequences.
-% FInally, report the blockage freq and duration of all nT APs
+% FInally, report the blockage freq and duration of all nT BSs
 %%frequency = (per sec)count transitions from 0 to 1 devided by simTime
 %%duration: (sec) count total # of 1's multiplied by tstep/blockageCount
 
 
 %----Play-with-values-here--------------------------------------
-wannaplot = AP_input.WANNAPLOT; %1;
+wannaplot = BS_input.WANNAPLOT; %1;
+nB = BS_input.NUM_BL; %number of blokers
+nTorig = BS_input.Original_NUM_AP; %Original APs without considering self blockage
+rT =BS_input.LOC_AP_DISTANCE; %location of APs
+alphaTorig = BS_input.LOC_AP_ANGLE;%location of APs
 
-nB = AP_input.NUM_BL;%4*R^2*rho_b;%=4000; %number of blokers
+frac = BS_input.FRACTION;
+omega = BS_input.SELF_BL_ANGLE_OMEGA;  
 
-nTorig = AP_input.Original_NUM_AP;
-rT =AP_input.LOC_AP_DISTANCE; %location of APs
-alphaTorig = AP_input.LOC_AP_ANGLE;%location of APs
-
-frac = AP_input.FRACTION;
-omega = AP_input.SELF_BL_ANGLE_OMEGA;  
-
-tempInd =  find(alphaTorig>=omega);
-xT = rT(tempInd).*cos(alphaTorig(tempInd));%location of APs
-yT = rT(tempInd).*sin(alphaTorig(tempInd));%location of APs
-nT = length(tempInd);
+%%Implementing self-blockage
+tempInd =  find(alphaTorig>=omega); %These BSs are not blocked by self-blockage
+xT = rT(tempInd).*cos(alphaTorig(tempInd));%location of APs (distance)
+yT = rT(tempInd).*sin(alphaTorig(tempInd));%location of APs (angle)
+nT = length(tempInd); % number of BS not blocked by self-blockage
 % nT=0
 if(nT==0)
     output=[0,0,0,nTorig,nT];   
@@ -40,20 +40,22 @@ end % Dealing zero APs
 xTfrac = frac*xT; %blockage zone around UE for each APs
 yTfrac = frac*yT;
 locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
-alphaT = alphaTorig(tempInd);
-simTime = AP_input.SIMULATION_TIME; %sec Total Simulation time
-tstep = AP_input.TIME_STEP; %(sec) time step
-mu = AP_input.MU; %Expected bloc dur =1/mu
+alphaT = alphaTorig(tempInd); %angle from x-axis for BS not blocked by self-bl
+simTime = BS_input.SIMULATION_TIME; %sec Total Simulation time
+tstep = BS_input.TIME_STEP; %(sec) time step
+mu = BS_input.MU; %Expected bloc dur =1/mu
 
 %---------------I am moving this to Sim...m--------
-% locT = AP_input.T_EFF_LOCATION; %AP location
-% alphaT = AP_input.T_ANGLE;
+% locT = BS_input.T_EFF_LOCATION; %AP location
+% alphaT = BS_input.T_ANGLE;
 
 % s_mobility = Generate_Mobility(s_input);  
 
 %------------------------------------------------------
 
-dataAP = cell(nT,1); %contain array of timestamps for all APs no matter which blocker
+dataBS = cell(nT,1); 
+%dataBS contain array of timestamps of blocker arrival for all BSs,
+%independent of which blocker is blocking
 
 for indB = 1:nB %for every blocker
     
@@ -67,13 +69,14 @@ for indB = 1:nB %for every blocker
         start_time = s_mobility.VS_NODE(indB).V_TIME(iter);
         velocity = sqrt((s_mobility.VS_NODE(indB).V_SPEED_X(iter))^2+ ...
             (s_mobility.VS_NODE(indB).V_SPEED_Y(iter))^2);
-        for indT = 1:nT %for every AP
+        for indT = 1:nT %for every BS around the UE (outside self-bl zone)
+            %The find_blockage_distance() function is written by Ish Jain
             distance_travelled = find_blockage_distance([loc0,loc1],locT(:,indT),alphaT(indT));
             timeToBl = distance_travelled/velocity; %time to blocking event
             timestampBl = start_time+timeToBl; %timestamp of blockage event
             if(distance_travelled>=0 && timestampBl<=simTime)
                 %                 data{indB,indT} = [data{indB,indT},start_time+blockage_time];
-                dataAP{indT} = [dataAP{indT}, timestampBl];
+                dataBS{indT} = [dataBS{indT}, timestampBl];
                 
             end
         end
@@ -83,28 +86,21 @@ end
 
 
 totaltime = (simTime)/tstep;
-binary_seq = zeros(nT,totaltime);
+binary_seq = zeros(nT,totaltime); %time sequence for every BS
 allBl = ones(1,totaltime); %binary seq of all blocked
 Tval = tstep:tstep:totaltime*tstep; %run simulation till tdur with step of tstep
 if(wannaplot),figure; hold on; end
 
 for indT = 1:nT
-    len =length(dataAP{indT});
-    dataAP{indT}(2,:) =  exprnd(1/mu,1,len);
+    len =length(dataBS{indT});
+    dataBS{indT}(2,:) =  exprnd(1/mu,1,len);
 end
 
-% indT = plot_input.indT;
-% indB = plot_input.indB;
-% aID = plot_input.aID;
-% save(strcat('dataAP_',num2str(aID),...
-%     '_',num2str(indB),...
-%     '_',num2str(indT),'.mat'),'dataAP')
-% csvwrite(strcat('output',num2str(aID),'.csv'),finaldata)
 for indT = 1:nT
     %     blDur  = exprnd(1/mu);
-    for timestamp = 1:size(dataAP{indT},2)
-        blDur  = ceil(dataAP{indT}(2,timestamp)/tstep);
-        blTime = ceil(dataAP{indT}(1,timestamp)/tstep);
+    for timestamp = 1:size(dataBS{indT},2)
+        blDur  = ceil(dataBS{indT}(2,timestamp)/tstep);
+        blTime = ceil(dataBS{indT}(1,timestamp)/tstep);
         if(blTime+blDur<=simTime/tstep)%avoid excess duration
             binary_seq(indT, blTime+1:1:(blTime+blDur))=binary_seq(indT, blTime+1:1:(blTime+blDur))+1;
         end
