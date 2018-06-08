@@ -28,9 +28,9 @@ hr = 1.4; %height receiver (UE)
 ht = 5; %height transmitter (BS)
 frac = (hb-hr)/(ht-hr);
 simTime = 3*60*60; %sec Total Simulation time
-% Note!!! simTime must be >100ms else the code won't work :)
+% Note!!! simTime must be >100s else the code won't work :)
 tstep = 0.0001; %(sec) time step
-mu = 2; %Expected bloc dur =1/mu
+mu = 2; %Expected bloc dur =1/mu sec
 R = 100; %m Radius
 densityBL = [0.005,0.01];
 densityAP = [50,100,200,300,400,500]*10^(-6);%(1:1:10)/10^4;
