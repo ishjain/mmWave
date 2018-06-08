@@ -27,7 +27,7 @@ Also, the optimal height of BSs would be lower as compared to microwave BSs.
 The following extensions are planned for future work
 
 * **Generalized blockage model:** We can add a simple model for static blockage in our analysis of dynamic and self-blockage. 
-\item Data rate analysis: The data rates of a typical user can be evaluated using the generalized blockage model. We are interested in evaluating whether 5G mmWave is capacity limited or blockage limited.
+* **Capacity analysis:** The data rates of a typical user can be evaluated using the generalized blockage model. We are interested in evaluating whether 5G mmWave is capacity limited or blockage limited.
 * **Fallback to 4G LTE:** We plan to explore the potential solution to blockages as switching to 4G LTE. Whether 4G would be able to handle the huge intermittent 5G traffic.
 * **Deterministic networks:** We have considered a random deployment of BSs in our analysis. However, in most cases, the deployments of BSs are based on a deterministic hexagonal grid. Therefore, a blockage model for the deterministic networks is more practical.
 * **Backhoul capacity analysis:** With the UEs switching between BSs in case of blockage events, the backhoul capacity requirements for the BS may have high fluctuations. It is interesting to study that random process.
