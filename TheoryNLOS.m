@@ -1,4 +1,4 @@
-%Theory_NLOS
+%TheoryNLOS
 %June 4: Numerical integration 6 times and infinite sum 2 times =D
 
 clear
@@ -39,7 +39,7 @@ mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
 temp = 2/pi*V*frac*R;
 
-R_NLOS = 90; %m
+R_NLOS = 60; %m
 dmin = 10; %m
 dmax = 50; %m
 
@@ -75,13 +75,17 @@ angleOAS = @(l,phi,d,psi) psi + atan((d/2+l.*cos(psi-phi))/(l.*sin(psi-phi)));
 angleOBS = @(l,phi,d,psi) psi - atan((d/2-l.*cos(psi-phi))/(l.*sin(psi-phi)));
 x1 = @(l,phi,d,psi) OA(l,phi,d,psi).*cos(angleOAS(l,phi,d,psi));
 y1 = @(l,phi,d,psi) OA(l,phi,d,psi).*sin(angleOAS(l,phi,d,psi));
-x2 = @(l,phi,d,psi) OB(l,phi,d,psi).*cos(angleOAS(l,phi,d,psi));
-y2 = @(l,phi,d,psi) OB(l,phi,d,psi).*sin(angleOAS(l,phi,d,psi));
+x2 = @(l,phi,d,psi) OB(l,phi,d,psi).*cos(angleOBS(l,phi,d,psi));
+y2 = @(l,phi,d,psi) OB(l,phi,d,psi).*sin(angleOBS(l,phi,d,psi));
 
 %NLOS coverage indicator random variable
 %We need to add self blockage???
 
 d_NLOS = @(r,theta,l,phi,psi) sqrt(r.^2+4*l.^2*sin(psi-phi).^2+4*r.*l.*sin(psi-phi)*sin(theta-psi));
+d_NLOSapprox = @(r,l) r+2*l;
+% r=50;
+% d=10;
+% theta=pi/4;
 
 %Indicates whether NLOS path exists (1) or not (0)
 IndicatorRV= @(r,theta,l,phi,d,psi) ((q1(r,theta)-b(l,phi,psi)-...
@@ -99,8 +103,8 @@ lamB = densityBL(indB);
 C(indB) = 2/pi*lamB*V*frac;
 
 %Conditional NLOS Probability conditioned on (r,theta,l,phi,d,psi,nT,nB)
-P_NLOS_Cond = @(r,theta,l,phi,d,psi)(C(indB)/mu*d_NLOS(r,theta,l,phi,psi)/...
-    (1+C(indB)/mu*d_NLOS(r,theta,l,phi,psi)))*...
+P_NLOS_Cond = @(r,theta,l,phi,d,psi)(C(indB)/mu*d_NLOSapprox(r,l)/...
+    (1+C(indB)/mu*d_NLOSapprox(r,l)))*...
     IndicatorRV(r,theta,l,phi,d,psi) +1-IndicatorRV(r,theta,l,phi,d,psi);
 
 
