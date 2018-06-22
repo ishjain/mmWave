@@ -1,7 +1,9 @@
+%June22: Run for large set of BS densities
+%  Consider worst case of 60degree blockage
 % May23: generate hexagonal cell theoretical results.
 %May 20: hexagon
 % numerical analysis with hexagonal cells
-% HowtoRunOnHPC?:  sbatch --array=1-6 mybatch.sbatch %for 6 values of AP density
+% HowtoRunOnHPC?:  sbatch --array=1-12 mybatch.sbatch %for 12 values of AP density
 
 clear
 close all
@@ -12,8 +14,8 @@ if(isempty(aID))
   aID = '1'; %Runs only for first value of AP density when aID=1
 end
 densityBL = [0.01,0.1];
-densityAP = [50,100,200,300,400,500]*10^(-6);%(1:1:10)/10^4;
-omegaVal = [0, pi/2];
+densityAP = [50,100,150,175,200,225,250,300,350,400,450,500]*10^(-6);%(1:1:10)/10^4;
+omegaVal = [0, pi/3]; %It will work only for [0,pi/3], so don't change :P
 
 indT = str2num(aID);
 lamT = densityAP(indT); %lambda
@@ -54,9 +56,9 @@ temp = 2/pi*V*frac;
 % for indT = 1:length(densityAP)
 % iterate over BS density
 for indO = 1:length(omegaVal)
-    if(indO==1)
+    if(indO==1) %omega=0;
         di = @(r,theta) sqrt(ri.^2+r.^2-2*ri.*r.*cos(phi-theta));
-    elseif(indO==2)
+    elseif(indO==2) %omega=60degree
         di = @(r,theta) sqrt(ri_worst60.^2+r.^2-2*ri_worst60.*r.*cos(phi_worst60-theta));
     end
     %iterate over blocker density
@@ -66,8 +68,8 @@ for indO = 1:length(omegaVal)
         condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=R))).*...
             2.*r/d^2 * 1/(2*pi);
         tic
-        results(indB,indO) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),...
-            0,d,'ArrayValued',true);        
+        results(indB,indO) = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true,'AbsTol',1e-50),...
+            0,d,'ArrayValued',true,'AbsTol',1e-50);        
         toc
     end
     
