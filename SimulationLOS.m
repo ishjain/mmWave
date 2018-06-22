@@ -21,6 +21,9 @@ if(isempty(aID))
   aID = '1'; %Runs only for first value of AP density when aID=1
 end
 rng('shuffle');
+
+considerLOS=0;
+considerNLOS=1;
 wannaplot=0; %Don't plot if running for many loops (else too many plots).
 V = 1; %velocity of blocker m/s
 hb = 1.8; %height blocker
@@ -35,6 +38,7 @@ R = 100; %m Radius
 densityBL = [0.005,0.01];
 densityAP = [50,100,200,300,400,500]*10^(-6);%(1:1:10)/10^4;
 omegaVal = [0, pi/3];
+
 
 s_input = cell(1,2);
 s_mobility = cell(1,2);

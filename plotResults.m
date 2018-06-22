@@ -23,7 +23,7 @@ sim_durCond=importdata('figures2/sim_durCond2.csv',',',1);
 
 nlines = size(theory_pB.data,2)-1;
 
-color = {'r','g','b','m','k','c'};
+color = {'r','g','b','m','k','c','y','y','y'};
 % legendArray = {'\lambda_B=0.1, \omega=0','\lambda_B=0.2, \omega=0',...
 %     '\lambda_B=0.1, \omega=2\pi/3','\lambda_B=0.2, \omega=2\pi/3'};
 % legendArray= {'lamB0.01omega0','lamB0.1omega0','lamB0.2omega0',...

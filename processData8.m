@@ -159,7 +159,7 @@ if(wannaplot)
 %     figure(1);
 %     semilogy(densityAP,pB);
 %     set(gca,'YScale','log');
-% %     ylim([1e-4,1]);title('Marginal prob of Blockage')
+%     ylim([1e-4,1]);title('Marginal prob of Blockage')
 %     legend(legendArray);
     figure(2);
     semilogy(densityAP,pBCond(:,1:6)); title('Conditional prob of Bl given n!=0')
