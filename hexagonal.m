@@ -13,7 +13,7 @@ if(isempty(aID))
 end
 densityBL = [0.01,0.1];
 densityAP = [50,100,200,300,400,500]*10^(-6);%(1:1:10)/10^4;
-omegaVal = [0, pi/3];
+omegaVal = [0, pi/2];
 
 indT = str2num(aID);
 lamT = densityAP(indT); %lambda
