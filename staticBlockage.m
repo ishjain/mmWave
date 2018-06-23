@@ -43,15 +43,16 @@ for iT = 1:length(densityBS)
             
             colTitle{tempind+1} = strcat(...
                 'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi));
-            
+            legendArray{tempind} = strcat(...
+                'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi));
         end
     end
 end
 colorVal = {'c', 'm', 'r', 'b'};
 figure;hold on;
 tempind=0;
-legendArray = {'\lambda_d=0, \omega=0','\lambda_d=0, \omega = 90',...
-    '\lambda_d=1e-3, \omega=0','\lambda_d=1e-3, \omega = 90'};
+% legendArray = {'\lambda_d=0, \omega=0','\lambda_d=0, \omega = 90',...
+%     '\lambda_d=1e-3, \omega=0','\lambda_d=1e-3, \omega = 90'};
 for iD = 1:length(densityD)
     for iO=1:length(omegaVal)
         tempind=tempind+1;

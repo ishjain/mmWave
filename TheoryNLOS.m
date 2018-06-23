@@ -1,4 +1,6 @@
 %TheoryNLOS
+%June 22: This is taking more than 5 days and still not giving results so
+%reject this model
 %June 4: Numerical integration 6 times and infinite sum 2 times =D
 
 clear

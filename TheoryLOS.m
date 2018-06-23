@@ -17,7 +17,7 @@ ht = 5;
 frac = (hb-hr)/(ht-hr); %fraction depends on heights
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
-densityBS = [50,100,200,300,400]*10^(-6); %BS=Base Station
+densityBS = [50,100,200,300,400,500]*10^(-6); %BS=Base Station
 densityBL = [0.01, 0.1]; %Dynamic BLockers
 densityD = [1e-9,0.0001]; %D = static blockage
 omegaVal = [0 pi/3];
@@ -96,7 +96,7 @@ for iT = 1:nBS
                 %5. Conditional expectation of duration of bl given n!=0
                 
                 
-                %This is used to get
+                %This is used to get duration
                 tempb(iT,iD,iO) = p(iO)*b(iD)*lamT*pi*R^2;%*angFrac;
                 %             ab(indT,indB,indO) = b(indT,indO)*a_tilde(indB,indO);%*b(indT);
                 Ei(iT,iB,iO) = ei(tempb(iT,iD,iO))-log(tempb(iT,iD,iO))-0.5772;
@@ -165,6 +165,7 @@ end
 % legendArray = {'lamB0.01omega0','lamB0.1omega0',...
 %     'lamB0.01omega60','lamB0.1omega60'};
 %Save to csv file for Rajeev
+
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,pBprime])]),...
     'figures2/theory_pB.csv','writevariablenames',0)
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,pBCondPrime])]),...
@@ -184,26 +185,26 @@ writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCondPrime])]),...
 
 
 if(wannaplot)
-    figure(1);
+    figure(1);grid on;
     semilogy(densityBS,pBprime);
-    ylim([1e-4,1]);title('Marginal prob of Blockage')
+    ylim([1e-6,1]);title('Marginal prob of Blockage')
     legend(legendArray);
     
     
-    figure(2);
+    figure(2);grid on;
     semilogy(densityBS,pBCondPrime); 
     title('Conditional prob of Bl given n!=0');
-    ylim([1e-4,1])
+    ylim([1e-6,1])
     legend(legendArray);
-    figure(3);
+    figure(3);grid on;
     semilogy(densityBS,freqPrime)
     title('Expected Freq of blockage')
     legend(legendArray);
-    ylim([1e-4,1])
-    figure(4);
+    ylim([1e-6,1])
+    figure(4);grid on;
     semilogy(densityBS,freqCondPrime);
     title('Conditional expectation of freq of bl given n!=0')
-    ylim([1e-4,1])
+    ylim([1e-6,1])
     legend(legendArray);
     
     figure(5); grid on;
