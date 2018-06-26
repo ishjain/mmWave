@@ -7,11 +7,11 @@ clear
 wannaplot=1;
 
 densityBL = [0.01,0.1];
-densityAP = [50,100,200,300,400,500]*10^(-6);
-omegaVal = [0, pi/3];
+densityAP = [50,100,150,175,200,225,250,300,350,400,450,500]*10^(-6);%(1:1:10)/10^4;
+omegaVal = [0, pi/3]; %It will work only for [0,pi/3], so don't change :P
 
 d = sqrt(2./(3*sqrt(3)*densityAP));
-Directory = 'DataHex2\';
+Directory = 'DataHex3\';
 nBL = length(densityBL);
 nAP = length(densityAP);
 nOmega = length(omegaVal);
@@ -37,7 +37,7 @@ writetable(cell2table([colTitle; num2cell(hex_data_plot)]),...
 
 if(wannaplot);
     h=figure(1);
-    semilogy(hex_data_plot(:,1),hex_data_plot(:,2:end), 'LineWidth',2);
+    semilogy(hex_data_plot(:,1),hex_data_plot(:,2:end), 'LineWidth',2, 'Marker','o');
     hold on;
     plot([0.5,5]*1e-4, [1e-5,1e-5],'k--')
     title('Blockage probability for Hexagonal cell case');
