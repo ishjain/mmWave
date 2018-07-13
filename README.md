@@ -1,6 +1,6 @@
 # Millimeter Wave Blockage Modeling
 
-Work towards my thesis at NYU
+Work towards my thesis at NYU. This work is submitted to JSAC, please find the paper [here](https://arxiv.org/pdf/1807.04388.pdf). 
 
 We present a simplified model for the key QoS parameters such as blockage probability, frequency, and duration in mmWave cellular systems. Our model considers an open park-like area with dynamic blockage due to mobile blockers and self-blockage due to user's own body. A typical user is at the center and the BSs are distributed uniformly around the user. The user is considered blocked when all potential BSs around the UE are blocked simultaneously. 
 
