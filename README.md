@@ -33,4 +33,4 @@ The following extensions are planned for future work
 * **Backhoul capacity analysis:** With the UEs switching between BSs in case of blockage events, the backhoul capacity requirements for the BS may have high fluctuations. It is interesting to study that random process.
 * **Correlated blockage:** We assumed the dynamic blockages of all the BSs are independent (So the overall blockage probability is the product of the blockage probabilities of all the BS-UE links). However, when blockage of multiple BSs are correlated (depends on blocker location;) we might get a higher blockage probability.
 
-
+Note our recent work include a hexagonal cell analysis for open park scenario and a NLOS model for urban scenario. The details can be found in [our paper](https://arxiv.org/pdf/1807.04388.pdf). The corresponding MATLAB codes will be updated soon.
