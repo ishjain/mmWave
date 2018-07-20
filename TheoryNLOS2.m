@@ -15,9 +15,9 @@ frac = (hb-hr)/(ht-hr); %fraction depends on heights
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
 densityBS = [50,100,200,300,400,500]*10^(-6); %BS=Base Station
-densityBL = [0.01 0.1  ]; %Dynamic BLockers
+densityBL = [0.01, 0.1  ]; %Dynamic BLockers
 densityD = [1e-9,0.0001]; %D = static blockage
-omegaVal = [0 pi/3];
+omegaVal = [0, pi/3];
 
 nBS = length(densityBS);
 nBL = length(densityBL);
@@ -36,8 +36,8 @@ Ew = 10; %m
 
 
 %%NLOS parameters----------
-Rt=66; %R^(0.91); %0.91=PLE(LOS)/PLE(NLOS), where PLE=path loss exponent
-kappa = 4;
+Rt=65; %R^(0.91); %0.91=PLE(LOS)/PLE(NLOS), where PLE=path loss exponent
+kappa = 2;
 
 % C=0.007;
 % mu=2;
@@ -85,14 +85,19 @@ for iT = 1:nBS
                 bt= @(r) 2/(C(iB)/mu)^2./(Rt^2-r.^2).*...
                     (C(iB)/mu*(Rt-r)-log((1+C(iB)/mu*Rt)./(1+C(iB)/mu*r))).*(r<=Rt);
                 PbNLOS = @(r) ((exp(-bt(r)*kappa)-bt(r)*exp(-kappa)));
+                
+
+                
+                
+                %Get LOS blockage probility
                 PbLOS  = @(r) (1-p(iO)*exp(-(beta(iD)*r+beta0(iD)))./(1+C(iB)/mu*r));
                 % temp=@(r) 1-exp(-(beta*r+beta0))./(1+C*r) *2.*r/R^2;
+                
+                %Combine LOS and NLOS blockage probability
                 atInt=@(r)  (PbNLOS(r)).*(PbLOS(r))*2.*r/R^2;
-                at(iB)=1-integral(atInt,0,Rt-1e-6,'absTol',1e-100)-integral(atInt,Rt+1e-6,R,'absTol',1e-100);
+                at(iB)=1-integral(atInt,0,Rt-1e-20,'absTol',1e-100)-integral(atInt,Rt+1e-20,R,'absTol',1e-100);
                 
-                %
-                
-                
+
                 %1. Marginal prob of Blockage (open area)
                 pB(iT,tempind) = exp(-at(iB)*lamT*pi*R^2);
                 
@@ -100,6 +105,16 @@ for iT = 1:nBS
                 %2. Conditional prob of blockage given coverage(newly defined)
                 pBCond(iT,tempind) = (pB(iT,tempind)-...
                     pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
+                
+                %Let's get a lower bound on NLOS blockage probability
+                btMin = @(r) 1./(1+C(iB)/mu).*(r<Rt);
+                PbNLOSmin = @(r) ((exp(-btMin(r)*kappa)-btMin(r)*exp(-kappa)));
+                atIntMin = @(r)  (PbNLOSmin(r)).*(PbLOS(r))*2.*r/R^2;
+                atMin(iB) = 1-integral(atIntMin,0,Rt-1e-20,'absTol',1e-100)-integral(atIntMin,Rt+1e-20,R,'absTol',1e-100);
+                pBmin(iT,tempind) = exp(-atMin(iB)*lamT*pi*R^2); 
+                pBCondMin(iT,tempind) = (pBmin(iT,tempind)-...
+                    pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
+                
                 %5. Conditional expectation of duration of bl given coverage
                 dur(iT,tempind) = 1/(p(iO)*q(iD)*lamT*pi*R^2+kappa*lamT*pi*Rt^2);
                 durCond(iT,tempind) = dur(iT,tempind)*1000/pCoverage(iT,iD,iO);
@@ -122,12 +137,15 @@ end
 
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4, pBCond])]),...
     'figures2/theory_pB_NLOS.csv','writevariablenames',0);
+writetable(cell2table([colTitle; num2cell([densityBS'*10^4, pBCondMin])]),...
+    'figures2/theory_pB_NLOS_Min.csv','writevariablenames',0);
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCond])]),...
     'figures2/theory_durCond_NLOS.csv','writevariablenames',0);
 
 if(wannaplot)
     figure(1);grid on;
     semilogy(densityBS,pB);
+
     ylim([1e-6,1]);
     title('Marginal prob of Blockage')
     legend(legendArray);
@@ -135,14 +153,16 @@ if(wannaplot)
     
     figure(2);grid on;
     semilogy(densityBS,pBCond);
-    title('Conditional prob of Bl given coverage');
+    hold on; 
+    semilogy(densityBS,pBCondMin);
+    title('Conditional prob of Bl given coverage (lower bound also shown)');
     ylim([1e-6,1])
     legend(legendArray);
     %
-    %     figure(5); grid on;
-    %     plot(densityBS,durCond)
-    %     title('Conditional expectated duration of bl given coverage')
-    %     legend(legendArray);
+        figure(5); grid on;
+        plot(densityBS,durCond)
+        title('Conditional expectated duration of bl given coverage')
+        legend(legendArray);
     
 end
 
@@ -244,8 +264,11 @@ if(wannaplotCellRadius)
     Ew = 10; %m
     
     %%NLOS parameters----------
-    Rtvalues=Rvalues.^(0.91);
-    kappa = 4;
+%     Rtvalues=Rvalues.^(0.91);
+PLE = 2.69;
+gammaNLOS = 5;
+Rtvalues = Rvalues*10^(gammaNLOS/(10*PLE));
+    kappa = 3;
     
     for iR = 1:nR
         R = Rvalues(iR);
@@ -293,13 +316,24 @@ if(wannaplotCellRadius)
                         %1. Marginal prob of Blockage (open area)
                         pB(iT,tempind) = exp(-at(iB)*lamT*pi*R^2);
                         
+                      
                         
                         %2. Conditional prob of blockage given coverage(newly defined)
                         pBCond(iR,tempind) = (pB(iT,tempind)-...
                             pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
-                        %5. Conditional expectation of duration of bl given coverage
-                        dur(iT,tempind) = 1/(p(iO)*q(iD)*lamT*pi*R^2+kappa*lamT*pi*Rt^2);
-                        durCond(iT,tempind) = dur(iT,tempind)*1000/pCoverage(iT,iD,iO);
+                        
+                         %Let's get a lower bound on NLOS blockage probability
+                btMin = @(r) 1./(1+C(iB)/mu).*(r<Rt);
+                PbNLOSmin = @(r) ((exp(-btMin(r)*kappa)-btMin(r)*exp(-kappa)));
+                atIntMin = @(r)  (PbNLOSmin(r)).*(PbLOS(r))*2.*r/R^2;
+                atMin(iB) = 1-integral(atIntMin,0,Rt-1e-20,'absTol',1e-100)-integral(atIntMin,Rt+1e-20,R,'absTol',1e-100);
+                pBmin(iT,tempind) = exp(-atMin(iB)*lamT*pi*R^2); 
+                pBCondMin(iR,tempind) = (pBmin(iT,tempind)-...
+                    pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
+                
+%                         %5. Conditional expectation of duration of bl given coverage
+%                         dur(iT,tempind) = 1/(p(iO)*q(iD)*lamT*pi*R^2+kappa*lamT*pi*Rt^2);
+%                         durCond(iT,tempind) = dur(iT,tempind)*1000/pCoverage(iT,iD,iO);
                         
                         %%put column title for saving in csv files
                         colTitle{1}='Radius';
@@ -315,11 +349,11 @@ if(wannaplotCellRadius)
             end
         end
     end
-    writetable(cell2table([colTitle; num2cell([Rvalues', pBCond])]),...
+    writetable(cell2table([colTitle; num2cell([Rvalues', pBCondMin])]),...
         'figures2/theory_withR_NLOS.csv','writevariablenames',0);
     
     figure(7);grid on;
-    semilogy(Rvalues,pBCond);
+    semilogy(Rvalues,pBCondMin);
     xlabel('R');
     title('Conditional prob of Bl given coverage');
     ylim([1e-6,1])

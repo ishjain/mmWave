@@ -8,6 +8,8 @@
 
 clear
 close all
+
+wannaplotCellRadius=0; %change only when focussing on cell radius
 %Copy from Simulation.m !!!---------!!!
 wannaplot=1;
 V = 1; %velocity m/s
@@ -231,7 +233,7 @@ end
 
 
 %% Effect of cell radius
-
+if(wannaplotCellRadius)
 clear
 close all
 wannaplot=1;
@@ -369,3 +371,5 @@ end
     title('Conditional prob of Bl given coverage');
     ylim([1e-6,1])
     legend(legendArray);
+    
+end
