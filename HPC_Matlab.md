@@ -39,7 +39,7 @@ $ git clone https://github.com/ishjain/mmWave.git
 $ cd mmWave
 ```
 
-(Optional): Edit the batch file. The content of `mybatch.sbatch` is pasted here. 
+(Optional): Edit the batch file. The content of [mybatch.sbatch](mybatch.sbatch) is pasted here. 
 ```
 #!/bin/bash
 #SBATCH --nodes=1
@@ -58,7 +58,7 @@ module load matlab/2017b
 RUNDIR=$SCRATCH/mmWave/
 cd $RUNDIR
 
-matlab -nodisplay -nodesktop -r "run Simulation_Feb20.m" //Change the filename here
+matlab -nodisplay -nodesktop -r "run SimulationLOS.m" //Change the filename here
 ```
 (Optional): Check the modules. You will find matlab/2017b
 ```
@@ -82,7 +82,7 @@ $ ls -lastr
 
 ```
 
-Step-6: When running the same code many times (atmost 400). In the main file "Simulation_Feb20.m", we first get the environment variable `aID = getenv('SLURM_ARRAY_TASK_ID')`. The aID is different for different parallel computations. So, you can use these id to seed the random generator and use them to name the output file. Note: `aID` is an array, so first convert to int for seed.
+Step-6: When running the same code many times (atmost 400). In the main file [SimulationLOS.m](SimulationLOS.m), we first get the environment variable `aID = getenv('SLURM_ARRAY_TASK_ID')`. The aID is different for different parallel computations. So, you can use these id to seed the random generator and use them to name the output file. Note: `aID` is an array, so first convert to int for seed.
 ```
 sbatch --array=1-100 mybatch.sbatch
 ```
