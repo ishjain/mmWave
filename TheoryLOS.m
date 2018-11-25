@@ -1,7 +1,7 @@
 %TheoryLOS: June19: Use generalized model and find dynamic bl probab given
 %coverage which is defined as "atleast one BS out side blocked zone
 %(defined by static ans self-blockage)"
-%Theory_LOS: June6: Renamed Theory2 to Theory_LOS and tehn to TheoryLOS
+%Theory_LOS: June6: Renamed Theory2 to Theory_LOS and then to TheoryLOS
 %Theory2 : Mar16: Based on new range of densities and self blockage angle
 %Based on Data7 onweards
 %Mar10: Theoretically calculating various values and save csv file
@@ -11,6 +11,7 @@ close all
 
 wannaplotCellRadius=0; %change only when focussing on cell radius
 %Copy from Simulation.m !!!---------!!!
+wannaSaveFiles=0;
 wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
@@ -18,7 +19,8 @@ hr = 1.4;
 ht = 5;
 frac = (hb-hr)/(ht-hr); %fraction depends on heights
 mu = 2; %Expected bloc dur =1/mu
-R = 100; %m Radius
+% Rvalues = [100, 200, 500, 1000];
+
 densityBS = [50,100,200,300,400,500]*10^(-6); %BS=Base Station
 densityBL = [0.01, 0.1]; %Dynamic BLockers
 densityD = [1e-9,0.0001]; %D = static blockage
@@ -38,6 +40,8 @@ freq=zeros(nBS,nBL,nO);
 freqCond=zeros(nBS,nBL,nO);
 durCond=zeros(nBS,nBL,nO);
 
+
+R = 200; %m Radius
 for iT = 1:nBS
     tempind = 0;
     for iB = 1:nBL
@@ -168,6 +172,7 @@ end
 %     'lamB0.01omega60','lamB0.1omega60'};
 %Save to csv file for Rajeev
 
+if(wannaSaveFiles)
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,pBprime])]),...
     'figures2/theory_pB.csv','writevariablenames',0)
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,pBCondPrime])]),...
@@ -178,7 +183,7 @@ writetable(cell2table([colTitle; num2cell([densityBS'*10^4,freqCondPrime])]),...
     'figures2/theory_freqCond.csv','writevariablenames',0)
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCondPrime])]),...
     'figures2/theory_durCond.csv','writevariablenames',0)
-
+end
 % csvwrite('figures2/theory_pB.csv',[densityAP'*10^4,pB]);
 % csvwrite('figures2/theory_pBCond.csv',[densityAP'*10^4,pBCond]);
 % csvwrite('figures2/theory_freq.csv',[densityAP'*10^4,freq]);
@@ -244,11 +249,13 @@ ht = 5;
 frac = (hb-hr)/(ht-hr); %fraction depends on heights
 mu = 2; %Expected bloc dur =1/mu
 R = 100; %m Radius
-densityBS = [100]*10^(-6); %BS=Base Station
-densityBL = [ 0.1]; %Dynamic BLockers
+densityBS = [0.01,1,50,100,150,200,250,300,350,400]*10^(-6); %BS=Base Station
+% densityBS = [100]*10^(-6); %BS=Base Station
+densityBL = [ 0.01]; %Dynamic BLockers
 densityD = [0.0001]; %D = static blockage
 omegaVal = [ pi/3];
-Rvalues = 50:500; %m Radius
+% Rvalues = 50:500; %m Radius
+Rvalues = [100, 200];
 nR = length(Rvalues);
 nBS = length(densityBS);
 nBL = length(densityBL);
@@ -263,11 +270,13 @@ pBCond=zeros(nBS,nBL,nO);
 freq=zeros(nBS,nBL,nO);
 freqCond=zeros(nBS,nBL,nO);
 durCond=zeros(nBS,nBL,nO);
+        
+for iT = 1:nBS
+    tempind = 0;
   for iR = 1:nR
         R = Rvalues(iR);
        
-        tempind = 0;
-for iT = 1:nBS
+
     
     for iB = 1:nBL
         for iD = 1:nD
@@ -314,7 +323,7 @@ for iT = 1:nBS
                 pBCond(iT,iB,iO) = (pB(iT,iB,iO)-pnn0(iT,iO))./(1-pnn0(iT,iO));
                 
                 %2.1 Conditional prob of blockage given coverage(newly defined)
-                pBCondPrime(iR,tempind) = (pBprime(iT,tempind)-...
+                pBCondPrime(iT,tempind) = (pBprime(iT,tempind)-...
                     pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
                 
 %                 %3. Expected Freq of blockage
@@ -348,12 +357,20 @@ for iT = 1:nBS
                 %         durCond3(indT,indB,indO) = pBCond(indT,indB,indO)/freqCond(indT,indB,indO);%wrong
                 colTitle{1}='Radius';
                 if(lamD<1e-7),lamD=0;end
-%                 colTitle{tempind+1} = sprintf('St%dDy%dOm%d',iB,iD,iO);
-                colTitle{tempind+1} = strcat('lamB',num2str(lamB),...
-                    'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi));
-                legendArray{tempind} = strcat(' \lambda_B=',num2str(lamB),...
-                    '\lambda_D=',num2str(lamD*1e4),' \omega=',num2str(omega*360/2/pi));
-%                 sprintf('\lambda_B=%f,\lambda_D=%d,\omega=%d',lamB,lamD*1e6,omega*360/2/pi);
+% % % %                 colTitle{tempind+1} = sprintf('St%dDy%dOm%d',iB,iD,iO);
+% % %                 colTitle{tempind+1} = strcat('lamB',num2str(lamB),...
+% % %                     'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi));
+% % %                 legendArray{tempind} = strcat(' \lambda_B=',num2str(lamB),...
+% % %                     '\lambda_D=',num2str(lamD*1e4),' \omega=',num2str(omega*360/2/pi));
+% % % %                 sprintf('\lambda_B=%f,\lambda_D=%d,\omega=%d',lamB,lamD*1e6,omega*360/2/pi);
+                        colTitle{tempind+1} = strcat('lamB',num2str(lamB),...
+                            'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi),...
+                            'R',num2str(R));
+                        
+                        %Put legends
+                        legendArray{tempind} = strcat(' \lambda_B=',num2str(lamB),...
+                            '\lambda_D=',num2str(lamD*1e4),' \omega=',num2str(omega*360/2/pi),...
+                            'R=',num2str(R));
             end
         end
     end
@@ -362,14 +379,23 @@ end
   end
 
 
-    writetable(cell2table([colTitle; num2cell([Rvalues', pBCondPrime])]),...
-        'figures2/theory_withR_LOS.csv','writevariablenames',0);
+%     writetable(cell2table([colTitle; num2cell([Rvalues', pBCondPrime])]),...
+%         'figures2/theory_withR_LOS.csv','writevariablenames',0);
+%       save('figures2/R_LOS.mat','pBCondPrime');
+
+%     figure(7);grid on;
+%     semilogy(Rvalues.',pBCondPrime);
+%     xlabel('R');
+%     title('Conditional prob of Bl given coverage');
+%     ylim([1e-6,1])
+%     legend(legendArray);
     
-    figure(7);grid on;
-    semilogy(Rvalues,pBCondPrime);
-    xlabel('R');
-    title('Conditional prob of Bl given coverage');
+    figure(8);grid on;
+    semilogy(densityBS,pBCondPrime, 'LineWidth',2);
+    xlabel('BS Density');
+    title('LOS Blockage Probability');
     ylim([1e-6,1])
     legend(legendArray);
+%     legend('R=100m','R=200m','R=500m','R=1000m');    
     
 end

@@ -7,13 +7,14 @@ close all;
 wannaplotCoverage=0; %change only when focussing on coverage
 wannaplotCellRadius=0; %change only when focussing on cell radius
 wannaplot=1;
+wannaSaveFiles=1;
 V = 1; %velocity m/s
 hb = 1.8;
 hr = 1.4;
 ht = 5;
 frac = (hb-hr)/(ht-hr); %fraction depends on heights
 mu = 2; %Expected bloc dur =1/mu
-R = 100; %m Radius
+R = 200; %m Radius
 densityBS = [50,100,200,300,400,500]*10^(-6); %BS=Base Station
 densityBL = [0.01, 0.1  ]; %Dynamic BLockers
 densityD = [1e-9,0.0001]; %D = static blockage
@@ -134,14 +135,14 @@ for iT = 1:nBS
     
 end
 
-
+if(wannaSaveFiles)
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4, pBCond])]),...
     'figures2/theory_pB_NLOS.csv','writevariablenames',0);
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4, pBCondMin])]),...
     'figures2/theory_pB_NLOS_Min.csv','writevariablenames',0);
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCond])]),...
     'figures2/theory_durCond_NLOS.csv','writevariablenames',0);
-
+end
 if(wannaplot)
     figure(1);grid on;
     semilogy(densityBS,pB);
@@ -249,9 +250,13 @@ if(wannaplotCellRadius)
     ht = 5;
     frac = (hb-hr)/(ht-hr); %fraction depends on heights
     mu = 2; %Expected bloc dur =1/mu
-    Rvalues = 50:500; %m Radius
-    densityBS = [100]*10^(-6); %BS=Base Station
-    densityBL = [ 0.1  ]; %Dynamic BLockers
+%     Rvalues = 50:500; %m Radius
+Rvalues = [100, 200];
+
+%     densityBS = [100]*10^(-6); %BS=Base Station
+densityBS = [0.01,1,50,100,150,200,250,300,350,400]*10^(-6); %BS=Base Station
+
+    densityBL = [ 0.01  ]; %Dynamic BLockers
     densityD = [0.0001]; %D = static blockage
     omegaVal = [ pi/3];
     
@@ -269,12 +274,13 @@ PLE = 2.69;
 gammaNLOS = 5;
 Rtvalues = Rvalues*10^(gammaNLOS/(10*PLE));
     kappa = 3;
-    
-    for iR = 1:nR
-        R = Rvalues(iR);
-        Rt= Rtvalues(iR);
-        tempind = 0;
-        for iT = 1:nBS
+   for iT = 1:nBS 
+       tempind = 0;
+        for iR = 1:nR
+            R = Rvalues(iR);
+            Rt= Rtvalues(iR);
+        
+        
             
             for iB = 1:nBL
                 for iD = 1:nD
@@ -328,7 +334,7 @@ Rtvalues = Rvalues*10^(gammaNLOS/(10*PLE));
                 atIntMin = @(r)  (PbNLOSmin(r)).*(PbLOS(r))*2.*r/R^2;
                 atMin(iB) = 1-integral(atIntMin,0,Rt-1e-20,'absTol',1e-100)-integral(atIntMin,Rt+1e-20,R,'absTol',1e-100);
                 pBmin(iT,tempind) = exp(-atMin(iB)*lamT*pi*R^2); 
-                pBCondMin(iR,tempind) = (pBmin(iT,tempind)-...
+                pBCondMin(iT,tempind) = (pBmin(iT,tempind)-...
                     pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
                 
 %                         %5. Conditional expectation of duration of bl given coverage
@@ -339,23 +345,33 @@ Rtvalues = Rvalues*10^(gammaNLOS/(10*PLE));
                         colTitle{1}='Radius';
                         if(lamD<1e-7),lamD=0;end
                         colTitle{tempind+1} = strcat('lamB',num2str(lamB),...
-                            'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi));
+                            'lamD',num2str(lamD*1e4),'omega',num2str(omega*360/2/pi),...
+                            'R',num2str(R));
                         
                         %Put legends
                         legendArray{tempind} = strcat(' \lambda_B=',num2str(lamB),...
-                            '\lambda_D=',num2str(lamD*1e4),' \omega=',num2str(omega*360/2/pi));
+                            '\lambda_D=',num2str(lamD*1e4),' \omega=',num2str(omega*360/2/pi),...
+                            'R=',num2str(R));
                     end
                 end
             end
         end
     end
-    writetable(cell2table([colTitle; num2cell([Rvalues', pBCondMin])]),...
-        'figures2/theory_withR_NLOS.csv','writevariablenames',0);
+%     writetable(cell2table([colTitle; num2cell([Rvalues', pBCondMin])]),...
+%         'figures2/theory_withR_NLOS.csv','writevariablenames',0);
+%     save('figures2/R_NLOS.mat','pBCondMin');
+%     figure(7);grid on;
+%     semilogy(Rvalues,pBCondMin);
+%     xlabel('R');
+%     title('Conditional prob of Bl given coverage');
+%     ylim([1e-6,1])
+%     legend(legendArray);
     
-    figure(7);grid on;
-    semilogy(Rvalues,pBCondMin);
-    xlabel('R');
-    title('Conditional prob of Bl given coverage');
+        figure(8);grid on;
+    semilogy(densityBS,pBCondMin, 'LineWidth',2);
+    xlabel('BS Density');
+    title('LOS Blockage Probability');
     ylim([1e-6,1])
     legend(legendArray);
+%     legend('R=100m','R=200m','R=500m','R=1000m'); 
 end
