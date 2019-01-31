@@ -11,7 +11,7 @@ close all
 
 wannaplotCellRadius=0; %change only when focussing on cell radius
 %Copy from Simulation.m !!!---------!!!
-wannaSaveFiles=0;
+wannaSaveFiles=1;
 wannaplot=1;
 V = 1; %velocity m/s
 hb = 1.8;
@@ -114,8 +114,9 @@ for iT = 1:nBS
                     (mu*(1-pnn0(iT,iO)));
                 durCond2(iT,iB,iO) = (1/tempb(iT,iD,iO))/...
                     (mu*(1-pnn0(iT,iO)));
-                durCond2prime(iT,iB,iO) = (1/tempb(iT,iD,iO))/...
-                    (mu*(1-pnn0(iT,iO)));
+                durCond2Prime(iT,tempind) = (1/tempb(iT,iD,iO))/...
+                    (mu*pCoverage(iT,iD,iO));
+                durCond2Prime(iT,tempind)=durCond2Prime(iT,tempind)*1000;
                 
                 %         nn = poissrnd(lamT*pi*R^2*angFrac,1,1000);
                 %         nn_n0 = nn(nn~=0);
@@ -181,7 +182,7 @@ writetable(cell2table([colTitle; num2cell([densityBS'*10^4,freqPrime])]),...
     'figures2/theory_freq.csv','writevariablenames',0)
 writetable(cell2table([colTitle; num2cell([densityBS'*10^4,freqCondPrime])]),...
     'figures2/theory_freqCond.csv','writevariablenames',0)
-writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCondPrime])]),...
+writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCond2Prime])]),...
     'figures2/theory_durCond.csv','writevariablenames',0)
 end
 % csvwrite('figures2/theory_pB.csv',[densityAP'*10^4,pB]);
@@ -215,7 +216,7 @@ if(wannaplot)
     legend(legendArray);
     
     figure(5); grid on;
-    plot(densityBS,durCondPrime)
+    plot(densityBS,durCond2Prime)
     hold on
     %     plot(densityAP',durCond2(:,6),'y-')
     %     plot(densityAP',durCond3(:,6),'b-')

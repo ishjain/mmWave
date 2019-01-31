@@ -13,9 +13,9 @@ if(isempty(aID))
   warning('aID is empty. Replacing it with 1.')  
   aID = '1'; %Runs only for first value of AP density when aID=1
 end
-densityBL = [0.01,0.1];
+densityBL = [0.01];
 densityAP = [50,100,150,175,200,225,250,300,350,400,450,500]*10^(-6);%(1:1:10)/10^4;
-omegaVal = [0, pi/3]; %It will work only for [0,pi/3], so don't change :P
+omegaVal = [ pi/3]; %It will work only for [0,pi/3], so don't change :P
 
 indT = str2num(aID);
 lamT = densityAP(indT); %lambda
@@ -47,7 +47,7 @@ hb = 1.8;
 hr = 1.4;
 ht = 5;
 mu = 2;
-R=100;
+R=200;
 frac = (hb-hr)/(ht-hr);
 temp = 2/pi*V*frac;
 % lamB = 0.1;
