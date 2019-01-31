@@ -1,15 +1,13 @@
-% Jun6: Renamed to SinumationLOS.m and added some comments
-% Simulation_Feb20
-%Apr3: Generate BS number and location once here and run for various
-%blocker density and various omega. Earlier it was di=one in BlockageSimFn
-
-% Mar14: Added code for self blockage (omega) and modified bl/AP densities
-% Update Feb20: Generate AP location using PPP
-
-% Update Feb17: Transferred to BlockageSimFn_Feb17.m
-% Random Way-point mobility model for blockers
-% Simulating Blockage of nT number of APs.
-% Generate time sequence of blocked/unblocked periods
+% Written by Ish Jain
+% NYU Tandon School of Engineering
+% Date: June 2018
+%
+% Description:
+% First we get the blocker mobility using Generate_Mobility.m function.
+% Then for different BS Densities, blocker densities and self-blockage
+% angle, we call BlockageSimFn.m function to get key blockage metrics like
+% blockage duration, frequency, and blockage. We should run this code for
+% many iterations prefebly on high performance computing machine.
 
 close all;
 clear;
@@ -22,8 +20,8 @@ if(isempty(aID))
 end
 rng('shuffle');
 
-considerLOS=0;
-considerNLOS=1;
+% considerLOS=0;
+% considerNLOS=1;
 wannaplot=0; %Don't plot if running for many loops (else too many plots).
 V = 1; %velocity of blocker m/s
 hb = 1.8; %height blocker

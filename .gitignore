@@ -1,11 +1,11 @@
 *.asv
-*.txt
+
 *.zip
 *tar*
 thesis*
-*png
+
 temp*
-figures*
+
 *mp4*
 Archive/*
 Data*

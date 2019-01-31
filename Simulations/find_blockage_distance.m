@@ -1,6 +1,8 @@
 function dist = find_blockage_distance(locB,locT,alpha)
-%find_blockage_distance.m
-%Feb19
+% Written by Ish Jain
+% NYU Tandon School of Engineering
+% Date: June 2018
+
 %Function to find the distance of blockage for a particular AP and
 %blocker
 

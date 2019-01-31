@@ -1,12 +1,19 @@
-%June22: Run for large set of BS densities
-%  Consider worst case of 60degree blockage
-% May23: generate hexagonal cell theoretical results.
-%May 20: hexagon
-% numerical analysis with hexagonal cells
+% Written by Ish Jain
+% NYU Tandon School of Engineering
+% Date: June 2018
+%
+% Description:
+% Hexagonal cell case for open park scenario. get theiretical results using
+% numerical analysis
+%
+% Since the code takes lot of time we only run for single BS density in one 
+% go or run in parallel for multiple BSs using NYU HPC.
+%
 % HowtoRunOnHPC?:  sbatch --array=1-12 mybatch.sbatch %for 12 values of AP density
 
 clear
 close all
+
 
 aID = getenv('SLURM_ARRAY_TASK_ID')
 if(isempty(aID))
@@ -15,7 +22,7 @@ if(isempty(aID))
 end
 densityBL = [0.01];
 densityAP = [50,100,150,175,200,225,250,300,350,400,450,500]*10^(-6);%(1:1:10)/10^4;
-omegaVal = [ pi/3]; %It will work only for [0,pi/3], so don't change :P
+omegaVal = [ pi/3]; %It will work only for {0,pi/3}, so don't change :P
 
 indT = str2num(aID);
 lamT = densityAP(indT); %lambda
@@ -43,6 +50,7 @@ phi_worst60 = [pi/2, -pi/2, 5*pi/6, -5*pi/6,...
     pi/2, -pi/2, 5*pi/6, -5*pi/6];
 
 V = 1; %velocity m/s
+%height of blocker, UE and BS
 hb = 1.8;
 hr = 1.4;
 ht = 5;
@@ -50,10 +58,7 @@ mu = 2;
 R=200;
 frac = (hb-hr)/(ht-hr);
 temp = 2/pi*V*frac;
-% lamB = 0.1;
 
-
-% for indT = 1:length(densityAP)
 % iterate over BS density
 for indO = 1:length(omegaVal)
     if(indO==1) %omega=0;
@@ -74,12 +79,5 @@ for indO = 1:length(omegaVal)
     end
     
 end
-% end
+
 csvwrite(strcat('output',num2str(aID),'.csv'),results)
-%
-% % condProb = @(r,theta,D) r .*cos(theta)
-%
-% condProb =  @(r,theta) exp(sum(log((C/mu.*di(r,theta))./(1+C/mu.*di(r,theta))).*(di(r,theta)<=100))).*2.*r/D^2 * 1/(2*pi);
-%
-% results = integral(@(r)integral(@(theta)condProb(r,theta),0,2*pi,'ArrayValued',true),0,D,'ArrayValued',true)
-%

@@ -1,20 +1,30 @@
-% BlockageNLOSfn.m
-% June10: this function implements NLOS blockage
+function output = BlockageSimFn(s_mobility,BS_input)
+% Written by Ish Jain
+% NYU Tandon School of Engineering
+% Date: June 2018
+%
+% Input:
+%   s_mobility: contains parameters corresponding to blockers mobility
+%   BS_input: contains infromation related to BS-UE topology and simulation
+%   parameters. See SimulationLOS.m for the usage.
+% Description:
+% We use random way point mobility model for the blockers. The UE is at the
+% origin and the BSs are located in a circle around the UE. A random
+% blocker will block the BS-UE LOS path is it crosses the line joining
+% between BS and the UE. We use find_blockage_distance.m function to fine
+% intersection of two such lines. Finally, we repeat the process for all
+% the blockers, for all the BSs and for the whole simulation duration. We
+% collect this data as sequences (binary_seq) of 0 and 1 (0=blockage, 1=not blocked) for
+% the entire duration for each BS-UE pair. Bitwise and of these sequences
+% for all the APs gives a sequence (allBl) indicating simultaneous blockage of all BSs.
+%
+% Output: output file contains:
+%   avgFreq: Average frequency of simultaneous blockage of all BS. 
+%   avgDur: Average duration of simultaneous blockage of all BS.
+%   probAllBl: probability of simultaneous blockage of all BS.
+%   nTorig: original number of BS (can be blocked by self-blockage)
+%   nT: number of BS not blocked by self-blockage
 
-function output = BlockageSimFnNLOS(s_mobility,BS_input,RefInput)
-% Update Jun6:BlockageSimFn.m renamed the function and few other parameter's name.
-% Update Apr13: Move s_mobility to Simulation.m
-% Update Feb 28: Save whole dataBS for all BS and BL density for all aID
-%               : Then write separate code for analysis and theoretical
-%               plots
-% BlockageSim_Feb17.m
-% Random Way-point mobility model for blockers
-% Simulating Blockage of nT number of BSs.
-% Generate time sequence of blocked/unblocked periods
-% AND operator on all those nT time sequences.
-% FInally, report the blockage freq and duration of all nT BSs
-%%frequency = (per sec)count transitions from 0 to 1 devided by simTime
-%%duration: (sec) count total # of 1's multiplied by tstep/blockageCount
 
 
 %----Play-with-values-here--------------------------------------
@@ -22,15 +32,15 @@ wannaplot = BS_input.WANNAPLOT; %1;
 nB = BS_input.NUM_BL; %number of blokers
 nTorig = BS_input.Original_NUM_AP; %Original APs without considering self blockage
 rT =BS_input.LOC_AP_DISTANCE; %location of APs
-thetaTorig = BS_input.LOC_AP_ANGLE;%location of APs
+alphaTorig = BS_input.LOC_AP_ANGLE;%location of APs
 
 frac = BS_input.FRACTION;
 omega = BS_input.SELF_BL_ANGLE_OMEGA;  
 
 %%Implementing self-blockage
-tempInd =  find(thetaTorig>=omega); %These BSs are not blocked by self-blockage
-xT = rT(tempInd).*cos(thetaTorig(tempInd));%location of APs (distance)
-yT = rT(tempInd).*sin(thetaTorig(tempInd));%location of APs (angle)
+tempInd =  find(alphaTorig>=omega); %These BSs are not blocked by self-blockage
+xT = rT(tempInd).*cos(alphaTorig(tempInd));%location of APs (distance)
+yT = rT(tempInd).*sin(alphaTorig(tempInd));%location of APs (angle)
 nT = length(tempInd); % number of BS not blocked by self-blockage
 % nT=0
 if(nT==0)
@@ -38,71 +48,14 @@ if(nT==0)
     return;
 end % Dealing zero APs
    
-% xT = rT.*cos(alphaT);%location of APs
-% yT = rT.*sin(alphaT);%location of APs
 xTfrac = frac*xT; %blockage zone around UE for each APs
 yTfrac = frac*yT;
 locT = [xTfrac';yTfrac']; %2 rows for x and y, nT columns
-thetaT = thetaTorig(tempInd); %angle from x-axis for BS not blocked by self-bl
+alphaT = alphaTorig(tempInd); %angle from x-axis for BS not blocked by self-bl
 simTime = BS_input.SIMULATION_TIME; %sec Total Simulation time
 tstep = BS_input.TIME_STEP; %(sec) time step
 mu = BS_input.MU; %Expected bloc dur =1/mu
 
-%---------------I am moving this to Sim...m--------
-% locT = BS_input.T_EFF_LOCATION; %AP location
-% alphaT = BS_input.T_ANGLE;
-
-% s_mobility = Generate_Mobility(s_input);  
-
-%------------------------------------------------------
-
-
-%---------------NLOS-----------------------------------
-
-nL=RefInput.NUM_REFLECTOR;
-ell=RefInput.LOC_REF_DISTANCE;
-phi=RefInput.LOC_REF_ANGLE;
-d=RefInput.LENGTH_REFLECTOR;
-psi=RefInput.ORIENTATION_REF;
-R_NLOS= RefInput.RADIUS_COVERAGE_NLOS;
-
-%find blockage prob from theoretical expn for a particular BS and reflector
-    
-%End point coordinates:
-p1 =  rT.*cos(thetaT);
-q1 =  rT.*sin(thetaT);
-p2 =  ell.*cos(phi);
-q2 = ell.*sin(phi);
-a =  2*ell.*sin(psi-phi).*sin(psi);
-b =  (-2)*ell.*sin(psi-phi).*cos(psi);
-OA = sqrt((d./2+ell.*cos(psi-phi)).^2+(ell.*sin(psi-phi)).^2);
-OB = sqrt((d./2-ell.*cos(psi-phi)).^2+(ell.*sin(psi-phi)).^2);
-angleOAS = psi + atan((d./2+ell.*cos(psi-phi))/(ell.*sin(psi-phi)));
-angleOBS = psi - atan((d./2-ell.*cos(psi-phi))/(ell.*sin(psi-phi)));
-x1 = OA.*cos(angleOAS);
-y1 = OA.*sin(angleOAS);
-x2 = OB.*cos(angleOBS);
-y2 = OB.*sin(angleOBS);
-for iL = 1:nL
-for iT = 1:nTorig
-
-
-%NLOS coverage indicator random variable
-d_NLOS(iL,iT) = sqrt(r(iT).^2+4*ell(iL).^2*sin(psi(iL)-phi(iL)).^2+...
-    4*r(iT).*ell(iL).*sin(psi(iL)-phi(iL))*sin(theta(iT)-psi(iL)));
-d_NLOSapprox = r(iT)+2*ell(iL);
-
-%Indicates whether NLOS path exists (1) or not (0)
-IndicatorRV=  ((q1(r,theta)-b(ell,phi,psi)-...
-    ((y1(l,phi,d,psi)-b(l,phi,psi))*(p1(r,theta)-a(l,phi,psi)))/(x1(l,phi,d,psi)-a(l,phi,psi))) >=0) && ...
-    ((q2(l,phi)-b(l,phi,psi)-...
-    ((y2(l,phi,d,psi)-b(l,phi,psi))*(p2(l,phi)-a(l,phi,psi)))/(x2(l,phi,d,psi)-a(l,phi,psi))) >=0) &&...
-    (d_NLOS(r,theta,l,phi,psi)<=R_NLOS);
-
-
-end
-end
-%----------------------------------------------------
 
 dataBS = cell(nT,1); 
 %dataBS contain array of timestamps of blocker arrival for all BSs,
@@ -122,7 +75,7 @@ for indB = 1:nB %for every blocker
             (s_mobility.VS_NODE(indB).V_SPEED_Y(iter))^2);
         for indT = 1:nT %for every BS around the UE (outside self-bl zone)
             %The find_blockage_distance() function is written by Ish Jain
-            distance_travelled = find_blockage_distance([loc0,loc1],locT(:,indT),thetaT(indT));
+            distance_travelled = find_blockage_distance([loc0,loc1],locT(:,indT),alphaT(indT));
             timeToBl = distance_travelled/velocity; %time to blocking event
             timestampBl = start_time+timeToBl; %timestamp of blockage event
             if(distance_travelled>=0 && timestampBl<=simTime)
@@ -174,6 +127,9 @@ end
 % plot(binary_seq(1,:), 'lineWidth',4)
 
 %%Evaluate frequency and average duration of blockage
+%%frequency = (per sec)count transitions from 0 to 1 devided by simTime
+%%duration: (sec) count total # of 1's multiplied by tstep/blockageCount
+
 avgFreq = sum(diff(allBl)>0)/simTime;
 avgDur = sum(allBl)*tstep/sum(diff(allBl)>0);
 probAllBl = sum(allBl)*tstep/simTime;
@@ -182,4 +138,3 @@ probAllBl = sum(allBl)*tstep/simTime;
 output=[avgFreq,avgDur,probAllBl,nTorig,nT];
 
 end
-

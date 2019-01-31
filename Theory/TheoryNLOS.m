@@ -1,5 +1,10 @@
-%TheoryNLOS2.m
-%June 22: NLOS model in JSAC
+% Written by Ish Jain
+% NYU Tandon School of Engineering
+% Date: June 2018
+%
+% Descripton:
+% Generate theoretical plots based on NLOS model presented in JSAC paper
+
 
 clear
 close all;
@@ -7,7 +12,7 @@ close all;
 wannaplotCoverage=0; %change only when focussing on coverage
 wannaplotCellRadius=0; %change only when focussing on cell radius
 wannaplot=1;
-wannaSaveFiles=1; %Saving mat files for plotting later
+wannaSaveFiles=0; %Saving mat files for plotting later
 
 V = 1; %velocity m/s
 hb = 1.8; %height blocker
@@ -124,11 +129,11 @@ end
 
 if(wannaSaveFiles)
     writetable(cell2table([colTitle; num2cell([densityBS'*10^4, pBCond])]),...
-        'figures2/theory_pB_NLOS.csv','writevariablenames',0);
+        'figures/theory_pB_NLOS.csv','writevariablenames',0);
     writetable(cell2table([colTitle; num2cell([densityBS'*10^4, pBCondMin])]),...
-        'figures2/theory_pB_NLOS_Min.csv','writevariablenames',0);
+        'figures/theory_pB_NLOS_Min.csv','writevariablenames',0);
     writetable(cell2table([colTitle; num2cell([densityBS'*10^4,durCond])]),...
-        'figures2/theory_durCond_NLOS.csv','writevariablenames',0);
+        'figures/theory_durCond_NLOS.csv','writevariablenames',0);
 end
 if(wannaplot)
     figure(1);grid on;
@@ -213,7 +218,7 @@ if (wannaplotCoverage)
         end
     end
     writetable(cell2table([colTitle2; num2cell([densityBS'*10^4,pCoverage])]),...
-        'figures2/coverage_NLOS.csv','writevariablenames',0);
+        'figures/coverage_NLOS.csv','writevariablenames',0);
     
     figure(3);grid on;
     semilogy(densityBS',pCoverage);
@@ -256,7 +261,7 @@ if(wannaplotCellRadius)
     Ew = 10; %m
     
     %%NLOS parameters----------
-    %     Rtvalues=Rvalues.^(0.91);
+ 
     PLE = 2.69;
     gammaNLOS = 5;
     Rtvalues = Rvalues*10^(gammaNLOS/(10*PLE));
@@ -323,11 +328,7 @@ if(wannaplotCellRadius)
                         pBmin(iT,tempind) = exp(-atMin(iB)*lamT*pi*R^2);
                         pBCondMin(iT,tempind) = (pBmin(iT,tempind)-...
                             pNoCoverage(iT,iD,iO))/pCoverage(iT,iD,iO);
-                        
-                        %                         %5. Conditional expectation of duration of bl given coverage
-                        %                         dur(iT,tempind) = 1/(p(iO)*q(iD)*lamT*pi*R^2+kappa*lamT*pi*Rt^2);
-                        %                         durCond(iT,tempind) = dur(iT,tempind)*1000/pCoverage(iT,iD,iO);
-                        
+                   
                         %%put column title for saving in csv files
                         colTitle{1}='Radius';
                         if(lamD<1e-7),lamD=0;end
@@ -345,14 +346,9 @@ if(wannaplotCellRadius)
         end
     end
     %     writetable(cell2table([colTitle; num2cell([Rvalues', pBCondMin])]),...
-    %         'figures2/theory_withR_NLOS.csv','writevariablenames',0);
-    %     save('figures2/R_NLOS.mat','pBCondMin');
-    %     figure(7);grid on;
-    %     semilogy(Rvalues,pBCondMin);
-    %     xlabel('R');
-    %     title('Conditional prob of Bl given coverage');
-    %     ylim([1e-6,1])
-    %     legend(legendArray);
+    %         'figures/theory_withR_NLOS.csv','writevariablenames',0);
+    %     save('figures/R_NLOS.mat','pBCondMin');
+
     
     figure(8);grid on;
     semilogy(densityBS,pBCondMin, 'LineWidth',2);

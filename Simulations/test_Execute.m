@@ -1,4 +1,9 @@
-%Testing Random Waypoint mobility model.
+% Testing Random Waypoint mobility model.
+% Copyright (c) 2011, Mathieu Boutin
+% All rights reserved.
+% Modified by Ish Jain
+% NYU Tandon School of Engineering
+% Date: June 2018
 clear all;clc;close all;
 
 s_input = struct('V_POSITION_X_INTERVAL',[-100 100],...%(m)
