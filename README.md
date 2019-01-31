@@ -2,10 +2,6 @@
 
 Work towards my thesis at NYU. This work is published as conference paper at international teletraffic congress (ITC30) and the journal paper at JSAC special issue on URLLC applications.
 
-Jain, Ish Kumar, Rajeev Kumar, and Shiendra Panwar. "[Driven by capacity or blockage? a millimeter wave blockage analysis](https://ieeexplore.ieee.org/abstract/document/8493070)." 2018 30th International Teletraffic Congress (ITC 30). Vol. 1. IEEE, 2018.
-
-Jain, Ish Kumar, Rajeev Kumar, and Shivendra Panwar. "[Can Millimeter Wave Cellular Systems provide High Reliability and Low Latency? An analysis of the impact of Mobile Blockers.](https://arxiv.org/pdf/1807.04388.pdf)" arXiv preprint arXiv:1807.04388 (2018).
-
 We present a simplified model for the key QoS parameters such as blockage probability, frequency, and duration in mmWave cellular systems. Our model considers an open park-like area with dynamic blockage due to mobile blockers and self-blockage due to user's own body. A typical user is at the center and the BSs are distributed uniformly around the user. The user is considered blocked when all potential BSs around the UE are blocked simultaneously. 
 
 ## Understand the Code
@@ -37,7 +33,13 @@ It provides several code and plots for better understanding the paper. But the c
 ## Results
 Our results tentatively show that the density of BS required to provide acceptable quality of experience to AR/VR applications is much higher than that obtained by capacity requirements alone. This suggests that the mmWave cellular networks may be blockage limited instead of capacity limited. 
 
-Also, the optimal height of BSs would be lower as compared to microwave BSs. 
+## Slides and papers
+Please look at the ITC slides [here](ITC_slides.pdf)
+
+Jain, Ish Kumar, Rajeev Kumar, and Shiendra Panwar. "[Driven by capacity or blockage? a millimeter wave blockage analysis](https://ieeexplore.ieee.org/abstract/document/8493070)." 2018 30th International Teletraffic Congress (ITC 30). Vol. 1. IEEE, 2018.
+
+Jain, Ish Kumar, Rajeev Kumar, and Shivendra Panwar. "[Can Millimeter Wave Cellular Systems provide High Reliability and Low Latency? An analysis of the impact of Mobile Blockers.](https://arxiv.org/pdf/1807.04388.pdf)" arXiv preprint arXiv:1807.04388 (2018).
+
 
 ## Future Work
 
