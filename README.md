@@ -4,10 +4,10 @@ Work towards my thesis at NYU. This work is submitted to JSAC, please find the p
 
 We present a simplified model for the key QoS parameters such as blockage probability, frequency, and duration in mmWave cellular systems. Our model considers an open park-like area with dynamic blockage due to mobile blockers and self-blockage due to user's own body. A typical user is at the center and the BSs are distributed uniformly around the user. The user is considered blocked when all potential BSs around the UE are blocked simultaneously. 
 
-# Understand the Code
+## Understand the Code
 
-## Folder: [Simulations](Simulations)
-### SimulationLOS.m
+### Directory: [Simulations](Simulations)
+
 The MATLAB simulations considers random waypoint mobility model for blockers. The main file is [SimulationLOS.m](Simulations/SimulationLOS.m).
 
 It takes around 1 hour to run for a single iteration. We obtained results for 10,000 iterations using [NYU HPC](HPC_Matlab.md) (high performance computing)
@@ -16,26 +16,26 @@ Note: SimulationLOS.m uses the following the functions- [Generate_Mobility.m](Si
 
 
 
-## Directory: [Theory](Theory)
+### Directory: [Theory](Theory)
 
 The [TheoryLOS.m](Theory/TheoryLOS.m) implements the theoretical results of LOS blockage and [TheoryNLOS.m](Theory/TheoryNLOS.m) for NLOS blockage.
 
-## Directory: [HexagonalCase](HexagonalCase)
+### Directory: [HexagonalCase](HexagonalCase)
 [hexagonal.m](HexagonalCase/hexagonal.m) considers hexagonal cell deployment of BSs for open park scenario. 
 
-## Directory: [DataProcessing](DataProcessing)
+### Directory: [DataProcessing](DataProcessing)
 The data obtained from NYU HPC by running SimulationLOS.m is analysed using [processData9.m](DataProcessing/processData9.m) 
 Finally, [plotResults.m](DataProcessing/plotResults.m) takes the data from csv files and plots the nice figures comparing theory and simulation :)
 
-## Directory: [CaseStudy](CaseStudy)
+### Directory: [CaseStudy](CaseStudy)
 It provides several code and plots for better understanding the paper. But the codes are not well maintained in this directory.
 
-# Results
+## Results
 Our results tentatively show that the density of BS required to provide acceptable quality of experience to AR/VR applications is much higher than that obtained by capacity requirements alone. This suggests that the mmWave cellular networks may be blockage limited instead of capacity limited. 
 
 Also, the optimal height of BSs would be lower as compared to microwave BSs. 
 
-# Future Work
+## Future Work
 
 The following extensions are planned for future work
 
