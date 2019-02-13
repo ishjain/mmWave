@@ -6,7 +6,7 @@ We present a simplified model for the key QoS parameters such as blockage probab
 
 ## Understand the Code
 
-### Directory: [Simulations](Simulations)
+#### Directory: [Simulations](Simulations)
 
 The MATLAB simulations considers random waypoint mobility model for blockers. The main file is [SimulationLOS.m](Simulations/SimulationLOS.m).
 
@@ -16,18 +16,18 @@ Note: SimulationLOS.m uses the following the functions- [Generate_Mobility.m](Si
 
 
 
-### Directory: [Theory](Theory)
+#### Directory: [Theory](Theory)
 
 The [TheoryLOS.m](Theory/TheoryLOS.m) implements the theoretical results of LOS blockage and [TheoryNLOS.m](Theory/TheoryNLOS.m) for NLOS blockage.
 
-### Directory: [HexagonalCase](HexagonalCase)
+#### Directory: [HexagonalCase](HexagonalCase)
 [hexagonal.m](HexagonalCase/hexagonal.m) considers hexagonal cell deployment of BSs for open park scenario. 
 
-### Directory: [DataProcessing](DataProcessing)
+#### Directory: [DataProcessing](DataProcessing)
 The data obtained from NYU HPC by running SimulationLOS.m is analysed using [processData9.m](DataProcessing/processData9.m) 
 Finally, [plotResults.m](DataProcessing/plotResults.m) takes the data from csv files and plots the nice figures comparing theory and simulation :)
 
-### Directory: [CaseStudy](CaseStudy)
+#### Directory: [CaseStudy](CaseStudy)
 It provides several code and plots for better understanding the paper. But the codes are not well maintained in this directory.
 
 ## Results
