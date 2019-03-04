@@ -53,3 +53,6 @@ The following extensions are planned for future work
 * **Correlated blockage:** We assumed the dynamic blockages of all the BSs are independent (So the overall blockage probability is the product of the blockage probabilities of all the BS-UE links). However, when blockage of multiple BSs are correlated (depends on blocker location;) we might get a higher blockage probability.
 
 Please cite [our paper](https://arxiv.org/pdf/1807.04388.pdf) if you are using any part of this code.
+
+## Contact
+Feel free to contact me for any issue with the code [ishjain@nyu.edu]
