@@ -1,6 +1,6 @@
 # Millimeter Wave Blockage Modeling
 
-Work towards my thesis at NYU. This work is published as conference paper at international teletraffic congress (ITC30) and the journal paper at JSAC special issue on URLLC applications.
+Work towards my thesis at NYU. This work is published as conference paper at [International Teletraffic Congress (ITC30)](https://ieeexplore.ieee.org/abstract/document/8493070) and the journal paper at [JSAC special issue on URLLC applications](https://ieeexplore.ieee.org/document/8643739?arnumber=8643739&source=authoralert).
 
 We present a simplified model for the key QoS parameters such as blockage probability, frequency, and duration in mmWave cellular systems. Our model considers an open park-like area with dynamic blockage due to mobile blockers and self-blockage due to user's own body. A typical user is at the center and the BSs are distributed uniformly around the user. The user is considered blocked when all potential BSs around the UE are blocked simultaneously. 
 
@@ -34,11 +34,14 @@ It provides several code and plots for better understanding the paper. But the c
 Our results tentatively show that the density of BS required to provide acceptable quality of experience to AR/VR applications is much higher than that obtained by capacity requirements alone. This suggests that the mmWave cellular networks may be blockage limited instead of capacity limited. 
 
 ## Slides and papers
-Please look at the ITC slides [here](ITC_slides.pdf)
+Please look at the ITC slides [here](ITC_slides.pdf).
+
+Please cite these papers if you are using any part of this code.
 
 Jain, Ish Kumar, Rajeev Kumar, and Shiendra Panwar. "[Driven by capacity or blockage? a millimeter wave blockage analysis](https://ieeexplore.ieee.org/abstract/document/8493070)." 2018 30th International Teletraffic Congress (ITC 30). Vol. 1. IEEE, 2018.
 
-Jain, Ish Kumar, Rajeev Kumar, and Shivendra Panwar. "[Can Millimeter Wave Cellular Systems provide High Reliability and Low Latency? An analysis of the impact of Mobile Blockers.](https://arxiv.org/pdf/1807.04388.pdf)" arXiv preprint arXiv:1807.04388 (2018).
+Jain, Ish Kumar, Rajeev Kumar, and Shivendra Panwar. "[The Impact of Mobile Blockers on Millimeter Wave Cellular Systems](https://ieeexplore.ieee.org/document/8643739?arnumber=8643739&source=authoralert)." IEEE Journal on Selected Areas in Communications (2019).
+
 
 
 ## Future Work
@@ -52,7 +55,6 @@ The following extensions are planned for future work
 * **Backhoul capacity analysis:** With the UEs switching between BSs in case of blockage events, the backhoul capacity requirements for the BS may have high fluctuations. It is interesting to study that random process.
 * **Correlated blockage:** We assumed the dynamic blockages of all the BSs are independent (So the overall blockage probability is the product of the blockage probabilities of all the BS-UE links). However, when blockage of multiple BSs are correlated (depends on blocker location;) we might get a higher blockage probability.
 
-Please cite [our paper](https://arxiv.org/pdf/1807.04388.pdf) if you are using any part of this code.
 
 ## Contact
 Feel free to contact me for any issue with the code [ishjain@nyu.edu]
